@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider, Navigate } from "react-router";
 import Auth from "./pages/auth/page";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "./context/Auth";
+import Dashboard from "./pages/faculty/dashboard/page";
 
 const router = createBrowserRouter([
   {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
         <Auth />
       </AuthProvider>
     ),
+  },
+  {
+    path: "/faculty/dashboard",
+    element: <Dashboard />,
   },
 ]);
 

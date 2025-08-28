@@ -41,7 +41,7 @@ const LoginForm = () => {
         const t = toast.success(`Welcome back, ${user.name}`);
 
         setTimeout(() => {
-          navigate("/teacher/dashboard");
+          navigate("/faculty/dashboard");
         }, 1500);
       })
       .catch((error) => {
@@ -89,7 +89,7 @@ const LoginForm = () => {
       toast.success(`Welcome back, ${user.name}`, { id: t }); // replaces loading
 
       setTimeout(() => {
-        navigate("/teacher/dashboard");
+        navigate("/faculty/dashboard");
       }, 1000);
     } catch (error: any) {
       form.reset();
