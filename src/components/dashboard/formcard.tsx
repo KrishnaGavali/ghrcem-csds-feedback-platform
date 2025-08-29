@@ -1,5 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react"; // Import dustbin icon
+import { Button } from "../ui/button";
 
 const FormCard = ({
   branch = "CSE-DS",
@@ -7,7 +8,16 @@ const FormCard = ({
   name = "Krishna Gavali",
 }) => {
   return (
-    <Card className="w-full sm:w-72 bg-card shadow-md hover:shadow-lg transition-shadow duration-300 border border-border rounded-xl">
+    <Card className="relative w-full sm:w-72 bg-card shadow-md hover:shadow-lg transition-shadow duration-300 border border-border rounded-xl">
+      {/* Delete Icon in Top-Right */}
+      <Button
+        className="absolute top-3 right-3 p-1 rounded-lg"
+        variant="destructive"
+        size="icon"
+      >
+        <Trash2 className="w-4 h-4" />
+      </Button>
+
       <CardContent className="flex flex-col gap-4 p-6">
         {/* Name */}
         <div>
@@ -31,7 +41,10 @@ const FormCard = ({
         <div className="border-t border-border mt-2"></div>
 
         {/* Submissions Button */}
-        <Button className="w-full mt-2" variant="outline">
+        <Button
+          className="w-full mt-2 border border-border rounded-md px-4 py-2 hover:bg-secondary hover:text-white transition-colors duration-300"
+          variant="outline"
+        >
           Submissions
         </Button>
       </CardContent>

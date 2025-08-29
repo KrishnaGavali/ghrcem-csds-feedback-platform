@@ -11,8 +11,9 @@ const Dashboard = () => {
 
       <main className="flex-1 flex flex-col items-start px-6 py-3 gap-2 md:gap-4 max-w-7xl mx-auto w-full">
         <Welcome name="Krishna Gavali" />
-        <Separator className="my-2 w-full" />
+        <Separator className="my-2 w-full bg-foreground/15" />
         <CreateFrom />
+        <Separator className="my-2 w-full bg-foreground/15" />
         <FormsList />
       </main>
     </div>

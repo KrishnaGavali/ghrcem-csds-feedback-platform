@@ -186,6 +186,7 @@ const LoginForm = () => {
             ? "light"
             : "dark"
         }
+        richColors
       />
     </div>
   );

@@ -1,9 +1,30 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
+import { account } from "@/handlers/appwrite";
+import { useNavigate } from "react-router";
+import { toast, Toaster } from "sonner";
 
 const Navbar = () => {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    const t = toast.loading("Logging out...");
+    account
+      .deleteSession("current")
+      .then(() => {
+        toast.success("Logged out successfully", { id: t });
+        setTimeout(() => {
+          navigate("/auth");
+        }, 1500);
+      })
+      .catch((error) => {
+        toast.error("Error logging out", { id: t });
+        console.error("Logout error:", error);
+      });
+  };
 
   return (
     <header className="border-b border-border bg-background shadow-sm">
@@ -11,12 +32,12 @@ const Navbar = () => {
         {/* Left section */}
         <div className="flex items-center gap-2">
           <h1 className="text-lg font-bold tracking-tight">
-            <a href="/faculty/dashboard" className="hover:underline">
+            <Link to="/faculty/dashboard" className="hover:underline">
               GHRCEM{" "}
               <span className="ml-1 text-sm font-normal text-muted-foreground">
                 CSDS Feedback
               </span>
-            </a>
+            </Link>
           </h1>
         </div>
 
@@ -40,16 +61,26 @@ const Navbar = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => {
-              // Add your logout logic here
-              console.log("Logout clicked");
-            }}
+            onClick={handleLogout}
             className="rounded-md"
           >
             Logout
           </Button>
         </div>
       </div>
+      <Toaster
+        position="bottom-right"
+        theme={
+          theme === "light"
+            ? "light"
+            : theme === "dark"
+            ? "dark"
+            : resolvedTheme === "light"
+            ? "light"
+            : "dark"
+        }
+        richColors
+      />
     </header>
   );
 };
