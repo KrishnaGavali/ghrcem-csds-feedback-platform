@@ -1,5 +1,3 @@
----
-
 # GHRCEM CSDS Feedback System
 
 **Streamlined feedback management for teachers and students at GHRCEM**
