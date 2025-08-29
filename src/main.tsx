@@ -22,7 +22,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/faculty/dashboard",
-    element: <Dashboard />,
+    element: (
+      <AuthProvider>
+        <Dashboard />
+      </AuthProvider>
+    ),
   },
 ]);
 

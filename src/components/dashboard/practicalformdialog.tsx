@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm, useFieldArray, Controller } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Plus, X, LaptopMinimal } from "lucide-react";
+import { Plus, X, GraduationCap, LaptopMinimal } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -20,11 +20,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { databases } from "@/handlers/appwrite";
+import { ID } from "appwrite";
+import { toast, Toaster } from "sonner";
+import { useTheme } from "next-themes";
 
 // Zod schema
-const formSchema = z.object({
+const practicalFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  type: z.literal("Theory"),
+  type: z.literal("Practical"),
   branch: z.string().min(1, "Branch is required"),
   faculties: z
     .array(
@@ -38,6 +42,7 @@ const formSchema = z.object({
 
 export default function CreatePracticalFormButton() {
   const [open, setOpen] = useState(false);
+  const { theme, resolvedTheme } = useTheme();
 
   const {
     register,
@@ -45,11 +50,11 @@ export default function CreatePracticalFormButton() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  } = useForm<z.infer<typeof practicalFormSchema>>({
+    resolver: zodResolver(practicalFormSchema),
     defaultValues: {
       name: "",
-      type: "Theory",
+      type: "Practical",
       branch: "",
       faculties: [{ facultyName: "", subject: "" }],
     },
@@ -60,17 +65,35 @@ export default function CreatePracticalFormButton() {
     name: "faculties",
   });
 
-  const onSubmit = (data) => {
-    console.log("Form Data:", data);
-    // Reset form and close dialog on successful submission
-    reset();
-    setOpen(false);
+  const onSubmit = async (data: z.infer<typeof practicalFormSchema>) => {
+    const toastId = toast.loading("Creating practical form...");
+
+    try {
+      await databases.createRow({
+        databaseId: import.meta.env.VITE_DATABASE_ID,
+        tableId: "forms",
+        rowId: ID.unique(),
+        data: {
+          Name: data.name,
+          Branch: data.branch,
+          Type: data.type,
+          Faculties: JSON.stringify(data.faculties),
+        },
+      });
+      toast.success("Practical form created successfully!", { id: toastId });
+      reset();
+      setOpen(false);
+    } catch (error: any) {
+      toast.error(`Error creating practical form: ${error.message}`, {
+        id: toastId,
+      });
+    }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="lg" className="w-[49%] sm:w-auto">
+        <Button variant="outline" size="lg" className="w-[47%] sm:w-auto">
           <LaptopMinimal className="h-5 w-5 text-primary" />
           Create Practical Form
         </Button>
@@ -90,9 +113,8 @@ export default function CreatePracticalFormButton() {
         </DialogHeader>
 
         <div className="space-y-6 pt-4">
-          {/* Basic Information Grid */}
+          {/* Basic Info */}
           <div className="grid gap-6 sm:grid-cols-2">
-            {/* Name Field */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
                 Form Name *
@@ -110,7 +132,6 @@ export default function CreatePracticalFormButton() {
               )}
             </div>
 
-            {/* Branch Field */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
                 Branch *
@@ -139,7 +160,7 @@ export default function CreatePracticalFormButton() {
             </div>
           </div>
 
-          {/* Type Field */}
+          {/* Type */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">
               Form Type
@@ -155,7 +176,7 @@ export default function CreatePracticalFormButton() {
             </p>
           </div>
 
-          {/* Faculties Section */}
+          {/* Faculties */}
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
@@ -177,65 +198,62 @@ export default function CreatePracticalFormButton() {
               </Button>
             </div>
 
-            {/* Faculty List */}
-            <div className="space-y-3">
-              {fields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="rounded-lg border border-border bg-muted/20 p-4"
-                >
-                  <div className="flex items-start gap-3">
-                    <div className="flex-1 grid gap-3 sm:grid-cols-2">
-                      <div className="space-y-2">
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                          Faculty Name
-                        </label>
-                        <Input
-                          {...register(`faculties.${index}.facultyName`)}
-                          placeholder="Enter faculty name"
-                          className="h-10 border-input bg-background focus:border-ring focus:ring-2 focus:ring-ring/20"
-                        />
-                        {errors.faculties?.[index]?.facultyName && (
-                          <p className="text-xs text-destructive">
-                            {errors.faculties[index].facultyName.message}
-                          </p>
-                        )}
-                      </div>
-
-                      <div className="space-y-2">
-                        <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                          Subject
-                        </label>
-                        <Input
-                          {...register(`faculties.${index}.subject`)}
-                          placeholder="Enter subject"
-                          className="h-10 border-input bg-background focus:border-ring focus:ring-2 focus:ring-ring/20"
-                        />
-                        {errors.faculties?.[index]?.subject && (
-                          <p className="text-xs text-destructive">
-                            {errors.faculties[index].subject.message}
-                          </p>
-                        )}
-                      </div>
+            {fields.map((field, index) => (
+              <div
+                key={field.id}
+                className="rounded-lg border border-border bg-muted/20 p-4"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="flex-1 grid gap-3 sm:grid-cols-2">
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Faculty Name
+                      </label>
+                      <Input
+                        {...register(`faculties.${index}.facultyName`)}
+                        placeholder="Enter faculty name"
+                        className="h-10 border-input bg-background focus:border-ring focus:ring-2 focus:ring-ring/20"
+                      />
+                      {errors.faculties?.[index]?.facultyName && (
+                        <p className="text-xs text-destructive">
+                          {errors.faculties[index].facultyName?.message}
+                        </p>
+                      )}
                     </div>
 
-                    {fields.length > 1 && (
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => remove(index)}
-                        className="h-10 w-10 shrink-0 border-destructive/20 p-0 text-destructive hover:bg-destructive hover:text-destructive-foreground"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    )}
+                    <div className="space-y-2">
+                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                        Subject
+                      </label>
+                      <Input
+                        {...register(`faculties.${index}.subject`)}
+                        placeholder="Enter subject"
+                        className="h-10 border-input bg-background focus:border-ring focus:ring-2 focus:ring-ring/20"
+                      />
+                      {errors.faculties?.[index]?.subject && (
+                        <p className="text-xs text-destructive">
+                          {errors.faculties[index].subject?.message}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
 
-            {errors.faculties && (
+                  {fields.length > 1 && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => remove(index)}
+                      className="h-10 w-10 shrink-0 border-destructive/20 p-0 text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+              </div>
+            ))}
+
+            {errors.faculties?.message && (
               <p className="flex items-center gap-2 text-sm text-destructive">
                 <div className="h-1 w-1 rounded-full bg-destructive"></div>
                 {errors.faculties.message}
@@ -243,7 +261,7 @@ export default function CreatePracticalFormButton() {
             )}
           </div>
 
-          {/* Action Buttons */}
+          {/* Actions */}
           <div className="flex flex-col-reverse gap-3 border-t border-border pt-6 sm:flex-row sm:justify-end">
             <Button
               type="button"
@@ -263,6 +281,19 @@ export default function CreatePracticalFormButton() {
           </div>
         </div>
       </DialogContent>
+      <Toaster
+        position="bottom-right"
+        theme={
+          theme === "light"
+            ? "light"
+            : theme === "dark"
+            ? "dark"
+            : resolvedTheme === "light"
+            ? "light"
+            : "dark"
+        }
+        richColors
+      />
     </Dialog>
   );
 }

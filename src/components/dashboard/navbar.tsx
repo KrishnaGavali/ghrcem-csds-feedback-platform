@@ -5,10 +5,12 @@ import { Link } from "react-router";
 import { account } from "@/handlers/appwrite";
 import { useNavigate } from "react-router";
 import { toast, Toaster } from "sonner";
+import { useAuth } from "@/context/Auth";
 
 const Navbar = () => {
   const { theme, setTheme, resolvedTheme } = useTheme();
   const navigate = useNavigate();
+  const { clearAuth } = useAuth();
 
   const handleLogout = () => {
     const t = toast.loading("Logging out...");
@@ -17,6 +19,7 @@ const Navbar = () => {
       .then(() => {
         toast.success("Logged out successfully", { id: t });
         setTimeout(() => {
+          clearAuth();
           navigate("/auth");
         }, 1500);
       })
