@@ -11,7 +11,7 @@ const Navbar = () => {
         {/* Left section */}
         <div className="flex items-center gap-2">
           <h1 className="text-lg font-bold tracking-tight">
-            <a href="/dashboard" className="hover:underline">
+            <a href="/faculty/dashboard" className="hover:underline">
               GHRCEM{" "}
               <span className="ml-1 text-sm font-normal text-muted-foreground">
                 CSDS Feedback
