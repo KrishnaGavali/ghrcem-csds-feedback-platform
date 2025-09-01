@@ -51,6 +51,9 @@ const FormsList = () => {
   const fetchForms = useCallback(async () => {
     setLoading(true);
     try {
+      console.log("Fetching forms from database...");
+      console.log("Using Database ID:", import.meta.env.VITE_DATABASE_ID);
+
       const res = await databases.listRows({
         databaseId: import.meta.env.VITE_DATABASE_ID,
         tableId: "forms",

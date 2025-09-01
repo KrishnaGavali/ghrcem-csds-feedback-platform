@@ -13,6 +13,7 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
+import { useFeedbackFormData } from "@/context/Form";
 
 // ✅ Validation Schema
 const formSchema = z.object({
@@ -31,6 +32,10 @@ const BasicDetailCard = () => {
     },
   });
 
+  const { Name, branch } = useFeedbackFormData();
+
+  console.log("Form Data from Context:", { Name, branch });
+
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log("✅ Submitted Data:", values);
   }
@@ -41,10 +46,9 @@ const BasicDetailCard = () => {
         <CardHeader>
           {/* ✅ Highlighted Form Info */}
           <div className="space-y-1">
-            <p className="text-xl font-bold text-foreground">Admission Form</p>
+            <p className="text-xl font-bold text-foreground">{Name}</p>
             <p className="text-sm text-muted-foreground">
-              Branch:{" "}
-              <span className="text-foreground">Computer Engineering</span>
+              Branch: <span className="text-foreground">{branch}</span>
             </p>
           </div>
 

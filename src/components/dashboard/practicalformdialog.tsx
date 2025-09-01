@@ -145,8 +145,10 @@ export default function CreatePracticalFormButton() {
                       <SelectValue placeholder="Select your branch" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="DS">Data Science</SelectItem>
-                      <SelectItem value="CS">Cyber Security</SelectItem>
+                      <SelectItem value="Data Science">Data Science</SelectItem>
+                      <SelectItem value="Cyber Security">
+                        Cyber Security
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 )}
