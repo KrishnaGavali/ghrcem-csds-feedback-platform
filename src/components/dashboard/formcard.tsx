@@ -40,7 +40,6 @@ const FormCard = ({
       });
       toast.success("Form deleted successfully!", { id: toastId });
       setDeleteDialogOpen(false);
-      setTimeout(() => window.location.reload(), 500);
     } catch (error: any) {
       toast.error(`Failed to delete form: ${error.message}`, { id: toastId });
     }

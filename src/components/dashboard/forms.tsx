@@ -1,11 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router";
 import FormCard from "./formcard";
-import { databases } from "@/handlers/appwrite";
+import { databases, account } from "@/handlers/appwrite";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
 import { useAuth } from "@/context/Auth";
+import { toast } from "sonner"; // ✅ lightweight notifications
 
 type Faculty = {
   facultyName: string;
@@ -16,18 +17,38 @@ type DefaultRow = {
   Name: string;
   Type: string;
   Branch: string;
-  Faculties: Array<Faculty>;
+  Faculties: Faculty[];
   $id: string;
 };
 
 const FormsList = () => {
   const [forms, setForms] = useState<DefaultRow[]>([]);
   const [loading, setLoading] = useState(true);
-  const { isAuth } = useAuth();
+  const { isAuth, setAuth } = useAuth();
   const navigate = useNavigate();
 
-  const fetchForms = async () => {
-    if (!isAuth) return; // Don't fetch if user not authenticated
+  /** 🔒 Verify user session */
+  const verifyAuth = useCallback(async () => {
+    try {
+      const session = await account.get();
+      if (!session?.$id) {
+        setAuth("", "", "");
+        navigate("/login");
+        toast.error("Session expired. Please log in again.");
+        return false;
+      }
+      setAuth(session.$id, session.email, session.name);
+      return true;
+    } catch {
+      setAuth("", "", "");
+      navigate("/login");
+      toast.error("Authentication failed. Please log in.");
+      return false;
+    }
+  }, [navigate, setAuth]);
+
+  /** 📄 Fetch forms from DB */
+  const fetchForms = useCallback(async () => {
     setLoading(true);
     try {
       const res = await databases.listRows({
@@ -35,38 +56,40 @@ const FormsList = () => {
         tableId: "forms",
       });
 
-      setForms(
-        res.rows.map((row: any) => ({
-          $id: row.$id,
-          Name: row.Name || "",
-          Type: row.Type || "",
-          Branch: row.Branch || "",
-          Faculties: JSON.parse(row.Faculties || "[]"),
-        }))
-      );
+      const sanitized = res.rows.map((row: any) => ({
+        $id: row.$id,
+        Name: row.Name || "Untitled",
+        Type: row.Type || "N/A",
+        Branch: row.Branch || "N/A",
+        Faculties: safeParseJSON(row.Faculties, []),
+      }));
+
+      setForms(sanitized);
     } catch (err) {
-      console.error("Error fetching forms:", err);
+      console.error("❌ Error fetching forms:", err);
+      toast.error("Failed to load forms. Please try again.");
       setForms([]);
     } finally {
       setLoading(false);
     }
+  }, []);
+
+  /** 🛡 Safe JSON parse helper */
+  const safeParseJSON = (str: string | null, fallback: any) => {
+    try {
+      return str ? JSON.parse(str) : fallback;
+    } catch {
+      return fallback;
+    }
   };
 
-  // Initial load + auth check
+  /** ⏳ Initial load + auth check */
   useEffect(() => {
-    if (!isAuth) {
-      setTimeout(() => {
-        navigate("/auth");
-      }, 3000);
-      return;
-    }
-
-    const delayTimeout = setTimeout(() => {
-      fetchForms();
-    }, 1500);
-
-    return () => clearTimeout(delayTimeout);
-  }, [isAuth]);
+    (async () => {
+      const ok = await verifyAuth();
+      if (ok) fetchForms();
+    })();
+  }, [verifyAuth, fetchForms]);
 
   return (
     <div className="mt-4 w-full">
@@ -84,9 +107,12 @@ const FormsList = () => {
               onClick={fetchForms}
               size="sm"
               className="flex items-center gap-2"
+              disabled={loading}
             >
-              <RefreshCw className="h-4 w-4" />
-              Refresh
+              <RefreshCw
+                className={`h-4 w-4 ${loading ? "animate-spin" : ""}`}
+              />
+              {loading ? "Refreshing..." : "Refresh"}
             </Button>
           </div>
 

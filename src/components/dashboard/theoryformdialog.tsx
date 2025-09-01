@@ -201,7 +201,7 @@ export default function CreateTheoryFormButton() {
                 key={field.id}
                 className="rounded-lg border border-border bg-muted/20 p-4"
               >
-                <div className="flex items-start gap-3">
+                <div className="flex items-center gap-3">
                   <div className="flex-1 grid gap-3 sm:grid-cols-2">
                     <div className="space-y-2">
                       <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">

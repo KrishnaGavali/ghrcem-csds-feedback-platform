@@ -6,6 +6,8 @@ import Auth from "./pages/auth/page";
 import { ThemeProvider } from "next-themes";
 import { AuthProvider } from "./context/Auth";
 import Dashboard from "./pages/faculty/dashboard/page";
+import FormSubmit from "./pages/student/submit/page";
+import { FormProvider } from "./context/Form";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +28,14 @@ const router = createBrowserRouter([
       <AuthProvider>
         <Dashboard />
       </AuthProvider>
+    ),
+  },
+  {
+    path: "/student/forms/submit",
+    element: (
+      <FormProvider>
+        <FormSubmit />
+      </FormProvider>
     ),
   },
 ]);
