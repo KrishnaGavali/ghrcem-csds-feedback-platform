@@ -5,8 +5,10 @@ import { ID } from "appwrite";
 import { useSubmission } from "@/context/Submission";
 import { useFeedbackFormData } from "@/context/Form";
 import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 const SubmitForm = () => {
+  const navigate = useNavigate();
   const { name, rollNo, div, submissions } = useSubmission();
   const { id } = useFeedbackFormData();
 
@@ -65,6 +67,8 @@ const SubmitForm = () => {
       toast.success("Feedback submitted successfully!", {
         id: toastId,
       });
+
+      navigate("/student/forms/success");
     } catch (error) {
       console.error("Submit error:", error);
 

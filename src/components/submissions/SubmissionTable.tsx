@@ -59,7 +59,7 @@ export default function SubmissionTable({ submissions }: SubmissionTableProps) {
         </Table>
       ) : (
         <Card className="flex items-center justify-center p-10 text-muted-foreground text-sm rounded-2xl shadow-sm border-dashed">
-          No submissions yet 🚫
+          No submissions yet
         </Card>
       )}
     </div>

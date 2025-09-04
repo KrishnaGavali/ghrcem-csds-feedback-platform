@@ -12,6 +12,7 @@ import { SubmissionProvider } from "./context/Submission";
 import ToasterComponent from "./components/toaster";
 import Navbar from "./components/dashboard/navbar";
 import SubmissionsPage from "./pages/faculty/submissions/page";
+import SuccessPage from "./pages/student/success/page";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
         </SubmissionProvider>
       </FormProvider>
     ),
+  },
+  {
+    path: "/student/forms/success",
+    element: <SuccessPage />,
   },
   {
     path: "/faculty/forms/submissions",
