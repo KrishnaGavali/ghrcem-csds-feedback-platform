@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import SubmissionRow from "./SubmissionRow";
+import { Button } from "../ui/button";
 
 const dummyData = [
   {
@@ -29,7 +30,11 @@ const dummyData = [
 export default function SubmissionTable() {
   return (
     <div>
-      <h2 className="text-lg font-semibold mb-4">Student Submissions</h2>
+      <div className="flex justify-between items-center mb-4">
+        {" "}
+        <h2 className="text-lg font-semibold mb-4">Student Submissions</h2>
+        <Button className=" bg-foreground text-background">Refresh</Button>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>

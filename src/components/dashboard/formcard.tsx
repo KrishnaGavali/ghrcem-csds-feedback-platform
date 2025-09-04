@@ -12,6 +12,7 @@ import {
   DialogDescription,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Link } from "react-router";
 
 interface FormCardProps {
   id: string;
@@ -104,12 +105,17 @@ const FormCard = ({
           <div className="border-t border-border mt-2"></div>
 
           {/* Submissions Button */}
-          <Button
-            className="w-full mt-2 border border-border rounded-md px-4 py-2"
-            variant="outline"
+          <Link
+            to={`/faculty/forms/submissions?formId=${id}`}
+            className="w-full"
           >
-            Submissions
-          </Button>
+            <Button
+              className="w-full mt-2 border border-border rounded-md px-4 py-2"
+              variant="outline"
+            >
+              Submissions
+            </Button>
+          </Link>
         </CardContent>
       </Card>
 

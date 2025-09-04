@@ -1,8 +1,6 @@
 "use client";
 
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-
 interface SubmissionRowProps {
   id: number;
   name: string;
