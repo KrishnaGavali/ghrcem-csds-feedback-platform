@@ -33,7 +33,7 @@ const FormsList = () => {
       const session = await account.get();
       if (!session?.$id) {
         setAuth("", "", "");
-        navigate("/login");
+        navigate("/auth");
         toast.error("Session expired. Please log in again.");
         return false;
       }

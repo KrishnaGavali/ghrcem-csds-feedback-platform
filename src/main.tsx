@@ -10,6 +10,8 @@ import FormSubmit from "./pages/student/submit/page";
 import { FormProvider } from "./context/Form";
 import { SubmissionProvider } from "./context/Submission";
 import ToasterComponent from "./components/toaster";
+import Navbar from "./components/dashboard/navbar";
+import SubmissionsPage from "./pages/faculty/submissions/page";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +42,19 @@ const router = createBrowserRouter([
           <FormSubmit />
         </SubmissionProvider>
       </FormProvider>
+    ),
+  },
+  {
+    path: "/faculty/forms/submissions",
+    element: (
+      <AuthProvider>
+        <FormProvider>
+          <SubmissionProvider>
+            <Navbar />
+            <SubmissionsPage />
+          </SubmissionProvider>
+        </FormProvider>
+      </AuthProvider>
     ),
   },
 ]);
