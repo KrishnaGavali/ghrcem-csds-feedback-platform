@@ -6,21 +6,18 @@ interface SubmissionRowProps {
   name: string;
   branch: string;
   rollNo: number;
-  email: string;
 }
 
 export default function SubmissionRow({
   name,
   branch,
   rollNo,
-  email,
 }: SubmissionRowProps) {
   return (
     <TableRow>
       <TableCell>{name}</TableCell>
       <TableCell>{branch}</TableCell>
       <TableCell>{rollNo}</TableCell>
-      <TableCell>{email}</TableCell>
     </TableRow>
   );
 }

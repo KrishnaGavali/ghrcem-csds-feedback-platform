@@ -18,6 +18,11 @@ type formDataType = {
   Faculties: { facultyName: string; subject: string }[];
 };
 
+type submissionType = {
+  StudentName: string;
+  Roll: number;
+};
+
 // ----------------------------
 // Skeleton Components
 // ----------------------------
@@ -74,6 +79,7 @@ export default function SubmissionsPage() {
 
   const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState<formDataType | null>(null);
+  const [submissions, setSubmissions] = useState<any[]>([]);
 
   useEffect(() => {
     if (!formId) {
@@ -119,7 +125,7 @@ export default function SubmissionsPage() {
         Name: formData.Name,
         Type: formData.Type,
         Branch: formData.Branch,
-        Faculties: formData.Faculties,
+        Faculties: JSON.parse(formData.Faculties || "[]"),
       });
 
       console.log("Form fetch result:", res);
@@ -130,8 +136,28 @@ export default function SubmissionsPage() {
     }
   };
 
+  const fetchSubmissions = async () => {
+    try {
+      const res = await databases.listRows({
+        databaseId: import.meta.env.VITE_DATABASE_ID,
+        tableId: "submissions",
+        queries: [
+          Query.equal("FormId", formId),
+          Query.select(["StudentName", "Roll"]),
+        ],
+      });
+
+      console.log("Submissions fetch result:", res);
+
+      setSubmissions(res.rows);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     fetchForm();
+    fetchSubmissions();
   }, []);
 
   return (
@@ -143,9 +169,11 @@ export default function SubmissionsPage() {
             <HeaderSkeleton />
           ) : (
             <SubmissionsHeader
+              id={formId}
               Name={formData?.Name || ""}
               Branch={formData?.Branch || ""}
               Type={formData?.Type || ""}
+              submissions={submissions.length}
             />
           )}
         </CardContent>
@@ -157,14 +185,22 @@ export default function SubmissionsPage() {
           Faculty Information
         </CardTitle>
         <CardContent className="p-4">
-          {loading ? <FacultySkeleton /> : <FacultySection />}
+          {loading ? (
+            <FacultySkeleton />
+          ) : (
+            <FacultySection facultyData={formData?.Faculties} />
+          )}
         </CardContent>
       </Card>
 
       {/* Submissions Table */}
       <Card>
         <CardContent className="p-4">
-          {loading ? <TableSkeleton /> : <SubmissionTable />}
+          {loading ? (
+            <TableSkeleton />
+          ) : (
+            <SubmissionTable submissions={submissions} />
+          )}
         </CardContent>
       </Card>
     </div>
