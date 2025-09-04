@@ -22,8 +22,7 @@ import {
 } from "@/components/ui/dialog";
 import { databases } from "@/handlers/appwrite";
 import { ID } from "appwrite";
-import { toast, Toaster } from "sonner";
-import { useTheme } from "next-themes";
+import { toast } from "sonner";
 
 // Zod schema
 const formSchema = z.object({
@@ -42,7 +41,6 @@ const formSchema = z.object({
 
 export default function CreateTheoryFormButton() {
   const [open, setOpen] = useState(false);
-  const { theme, resolvedTheme } = useTheme();
 
   const {
     register,
@@ -281,7 +279,7 @@ export default function CreateTheoryFormButton() {
           </div>
         </div>
       </DialogContent>
-      <Toaster
+      {/* <Toaster
         position="bottom-right"
         theme={
           theme === "light"
@@ -293,7 +291,7 @@ export default function CreateTheoryFormButton() {
             : "dark"
         }
         richColors
-      />
+      /> */}
     </Dialog>
   );
 }

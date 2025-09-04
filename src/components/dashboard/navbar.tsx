@@ -4,11 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 import { account } from "@/handlers/appwrite";
 import { useNavigate } from "react-router";
-import { toast, Toaster } from "sonner";
+import { toast } from "sonner";
 import { useAuth } from "@/context/Auth";
 
 const Navbar = () => {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const navigate = useNavigate();
   const { clearAuth } = useAuth();
 
@@ -71,7 +71,7 @@ const Navbar = () => {
           </Button>
         </div>
       </div>
-      <Toaster
+      {/* <Toaster
         position="bottom-right"
         theme={
           theme === "light"
@@ -83,7 +83,7 @@ const Navbar = () => {
             : "dark"
         }
         richColors
-      />
+      /> */}
     </header>
   );
 };

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Star } from "lucide-react";
 import {
   Card,
@@ -7,17 +7,42 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
+import { useSubmission } from "@/context/Submission";
+import { useFeedbackFormData } from "@/context/Form";
 
 type TeacherCardProps = {
   name: string;
   subject: string;
+  questionNo?: number;
+  setRatingAtIndex?: (idx: number, rating: number) => void;
+  facultyIndex?: number;
 };
 
-const TeacherCard: React.FC<TeacherCardProps> = ({ name, subject }) => {
+const TeacherCard: React.FC<TeacherCardProps> = ({
+  name,
+  subject,
+  questionNo,
+  setRatingAtIndex,
+  facultyIndex,
+}) => {
   const [rating, setRating] = useState<number>(0);
   const [hovered, setHovered] = useState<number>(0);
+  const { submissions } = useSubmission();
 
-  console.log(`Rendering TeacherCard for ${name} - ${subject}`);
+  useEffect(() => {
+    if (
+      questionNo !== undefined &&
+      setRatingAtIndex &&
+      facultyIndex !== undefined &&
+      rating > 0
+    ) {
+      setRatingAtIndex(facultyIndex, rating);
+    }
+  }, [rating]);
+
+  useEffect(() => {
+    console.log("Current Submissions:", submissions);
+  }, [submissions]);
 
   return (
     <Card className="md:w-full">

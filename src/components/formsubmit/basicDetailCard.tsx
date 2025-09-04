@@ -14,6 +14,8 @@ import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Separator } from "../ui/separator";
 import { useFeedbackFormData } from "@/context/Form";
+import { useSubmission } from "@/context/Submission";
+import { toast } from "sonner";
 
 // ✅ Validation Schema
 const formSchema = z.object({
@@ -32,12 +34,37 @@ const BasicDetailCard = () => {
     },
   });
 
-  const { Name, branch } = useFeedbackFormData();
-
-  console.log("Form Data from Context:", { Name, branch });
+  const { setName, setDiv, setRollNo } = useSubmission();
+  const { Name, branch, setShowForm } = useFeedbackFormData();
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log("✅ Submitted Data:", values);
+    // ✅ Using toast.promise for better UX
+    toast.promise(
+      new Promise<void>((resolve, reject) => {
+        try {
+          setName(values.name);
+          setDiv(values.division);
+          setRollNo(Number(values.rollno));
+
+          // simulate async delay for better UX
+
+          setTimeout(() => {
+            resolve();
+          }, 500);
+
+          setTimeout(() => {
+            setShowForm(true);
+          }, 500);
+        } catch (err) {
+          reject(err);
+        }
+      }),
+      {
+        loading: "Updating student details...",
+        success: "Details updated successfully 🎉",
+        error: "Failed to update details. Try again.",
+      }
+    );
   }
 
   return (

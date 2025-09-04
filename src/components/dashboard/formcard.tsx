@@ -2,8 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { databases } from "@/handlers/appwrite";
-import { toast, Toaster } from "sonner";
-import { useTheme } from "next-themes";
+import { toast } from "sonner";
 import { useState } from "react";
 import {
   Dialog,
@@ -27,7 +26,6 @@ const FormCard = ({
   type = "Theory",
   name = "Krishna Gavali",
 }: FormCardProps) => {
-  const { theme, resolvedTheme } = useTheme();
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const handleDelete = async () => {
@@ -115,7 +113,7 @@ const FormCard = ({
         </CardContent>
       </Card>
 
-      {/* Sonner Toaster */}
+      {/* Sonner Toaster
       <Toaster
         position="bottom-right"
         theme={
@@ -128,7 +126,7 @@ const FormCard = ({
             : "dark"
         }
         richColors
-      />
+      /> */}
     </>
   );
 };

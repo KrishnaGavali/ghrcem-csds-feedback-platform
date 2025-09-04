@@ -16,8 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
-import { toast, Toaster } from "sonner"; // ✅ correct sonner import
-import { useTheme } from "next-themes";
+import { toast } from "sonner"; // ✅ correct sonner import
 import { useAuth } from "@/context/Auth";
 import { useNavigate } from "react-router";
 
@@ -38,7 +37,7 @@ const LoginForm = () => {
         console.log("User is logged in", user);
         setAuth(user.$id, user.email, user.name);
 
-        const t = toast.success(`Welcome back, ${user.name}`);
+        toast.success(`Welcome back, ${user.name}`);
 
         setTimeout(() => {
           navigate("/faculty/dashboard");
@@ -55,7 +54,6 @@ const LoginForm = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { theme, resolvedTheme } = useTheme();
   const { setAuth } = useAuth();
   const navigate = useNavigate();
 
@@ -173,21 +171,6 @@ const LoginForm = () => {
           </Form>
         </CardContent>
       </Card>
-
-      {/* ✅ Toaster mounted here */}
-      <Toaster
-        position="bottom-right"
-        theme={
-          theme === "light"
-            ? "light"
-            : theme === "dark"
-            ? "dark"
-            : resolvedTheme === "light"
-            ? "light"
-            : "dark"
-        }
-        richColors
-      />
     </div>
   );
 };

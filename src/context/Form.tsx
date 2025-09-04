@@ -19,6 +19,8 @@ interface FormContextType {
   setType: (type: string) => void;
   id: string;
   setId: (id: string) => void;
+  showForm: boolean;
+  setShowForm: (showForm: boolean) => void;
 }
 
 const FacultyContext = createContext<FormContextType | undefined>(undefined);
@@ -32,6 +34,7 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({
   const [branch, setBranch] = useState<string>("");
   const [type, setType] = useState<string>("");
   const [id, setId] = useState<string>("");
+  const [showForm, setShowForm] = useState<boolean>(false);
 
   return (
     <FacultyContext.Provider
@@ -48,6 +51,8 @@ export const FormProvider: React.FC<{ children: ReactNode }> = ({
         setType,
         id,
         setId,
+        showForm,
+        setShowForm,
       }}
     >
       {children}
