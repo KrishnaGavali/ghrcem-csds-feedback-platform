@@ -13,6 +13,7 @@ import ToasterComponent from "./components/toaster";
 import Navbar from "./components/dashboard/navbar";
 import SubmissionsPage from "./pages/faculty/submissions/page";
 import SuccessPage from "./pages/student/success/page";
+import AppwriteConnect from "./pages/connect/appwrite/page";
 
 const router = createBrowserRouter([
   {
@@ -61,6 +62,10 @@ const router = createBrowserRouter([
         </FormProvider>
       </AuthProvider>
     ),
+  },
+  {
+    path: "/connect/appwrite",
+    element: <AppwriteConnect />,
   },
 ]);
 

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"; // Assuming shadcn button is here
-import { Copy } from "lucide-react"; // Lucide icon
+import { Copy, ListTodo } from "lucide-react"; // Lucide icon
 import { toast } from "sonner"; // Sonner toaster
 import { useState } from "react";
 
@@ -45,6 +45,15 @@ export default function SubmissionsHeader({
         >
           <Copy className="w-4 h-4" />
           Copy Link
+        </Button>
+
+        <Button
+          onClick={() => window.open(link, "_blank")}
+          className="mt-2 flex items-center gap-2"
+          variant="outline"
+        >
+          <ListTodo className="w-4 h-4" />
+          Open Form
         </Button>
       </div>
     </div>
