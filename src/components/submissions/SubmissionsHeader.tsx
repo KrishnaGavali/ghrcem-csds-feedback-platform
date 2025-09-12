@@ -1,9 +1,16 @@
-import { Button } from "@/components/ui/button"; // Assuming shadcn button is here
-import { Copy, ListTodo } from "lucide-react"; // Lucide icon
-import { toast } from "sonner"; // Sonner toaster
+import { Button } from "@/components/ui/button";
+import { Copy, ListTodo, FileBarChart2 } from "lucide-react";
+import { toast } from "sonner";
 import { useState } from "react";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
 
-type propsType = {
+type SubmissionsHeaderProps = {
   id: string;
   Name: string;
   Branch: string;
@@ -17,7 +24,7 @@ export default function SubmissionsHeader({
   Branch = "CSE-DS",
   Type = "Theory",
   submissions = 24,
-}: propsType) {
+}: SubmissionsHeaderProps) {
   const [link] = useState(
     `${window.location.origin}/student/forms/submit?formId=${id}`
   );
@@ -29,33 +36,57 @@ export default function SubmissionsHeader({
   };
 
   return (
-    <div className="flex justify-between items-center w-full">
-      <div>
-        <h2 className="text-lg font-semibold">Name: {Name}</h2>
-        <h2 className="text-lg font-semibold">Branch: {Branch}</h2>
-        <p className="text-muted-foreground">Type: {Type}</p>
-      </div>
-      <div className="text-right">
-        <h1 className="text-3xl font-bold">{submissions}</h1>
-        <p className="text-muted-foreground text-sm">submissions</p>
-        <Button
-          onClick={handleCopy}
-          className="mt-2 flex items-center gap-2"
-          variant="outline"
-        >
-          <Copy className="w-4 h-4" />
-          Copy Link
-        </Button>
+    <Card className="w-full border shadow-sm bg-background">
+      {/* Header */}
+      <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-left sm:text-start">
+          <CardTitle className="text-lg sm:text-xl font-semibold text-foreground break-words">
+            {Name}
+          </CardTitle>
+          <CardDescription className="text-sm sm:text-base">
+            {Branch} • {Type}
+          </CardDescription>
+        </div>
 
-        <Button
-          onClick={() => window.open(link, "_blank")}
-          className="mt-2 flex items-center gap-2"
-          variant="outline"
-        >
-          <ListTodo className="w-4 h-4" />
-          Open Form
-        </Button>
-      </div>
-    </div>
+        <div className="sm:text-right">
+          <span className="inline-flex items-center justify-center rounded-full bg-primary/10 text-primary px-3 py-1 text-xs sm:text-sm font-medium">
+            {submissions} submissions
+          </span>
+        </div>
+      </CardHeader>
+
+      {/* Actions */}
+      <CardContent>
+        <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
+          <Button
+            onClick={handleCopy}
+            className="flex items-center gap-2 w-full sm:w-auto"
+            variant="outline"
+          >
+            <Copy className="w-4 h-4" />
+            Copy Link
+          </Button>
+
+          <Button
+            onClick={() => window.open(link, "_blank")}
+            className="flex items-center gap-2 w-full sm:w-auto"
+            variant="secondary"
+          >
+            <ListTodo className="w-4 h-4" />
+            Open Form
+          </Button>
+
+          <Button
+            onClick={() =>
+              window.open("/faculty/forms/submissions/report", "_blank")
+            }
+            className="flex items-center gap-2 w-full sm:w-auto"
+          >
+            <FileBarChart2 className="w-4 h-4" />
+            View Report
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

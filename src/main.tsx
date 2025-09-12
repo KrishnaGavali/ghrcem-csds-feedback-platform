@@ -14,6 +14,7 @@ import Navbar from "./components/dashboard/navbar";
 import SubmissionsPage from "./pages/faculty/submissions/page";
 import SuccessPage from "./pages/student/success/page";
 import AppwriteConnect from "./pages/connect/appwrite/page";
+import ReportPage from "./pages/faculty/submissions/report/page";
 
 const router = createBrowserRouter([
   {
@@ -66,6 +67,14 @@ const router = createBrowserRouter([
   {
     path: "/connect/appwrite",
     element: <AppwriteConnect />,
+  },
+  {
+    path: "/faculty/forms/submissions/report",
+    element: (
+      <AuthProvider>
+        <ReportPage />
+      </AuthProvider>
+    ),
   },
 ]);
 
