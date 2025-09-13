@@ -14,6 +14,7 @@ import Navbar from "./components/dashboard/navbar";
 import SubmissionsPage from "./pages/faculty/submissions/page";
 import SuccessPage from "./pages/student/success/page";
 import ReportPage from "./pages/faculty/submissions/report/page";
+import { Analytics } from "@vercel/analytics/react";
 
 const router = createBrowserRouter([
   {
@@ -77,6 +78,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <RouterProvider router={router} />
+      <Analytics />
       <ToasterComponent />
     </ThemeProvider>
   </StrictMode>
