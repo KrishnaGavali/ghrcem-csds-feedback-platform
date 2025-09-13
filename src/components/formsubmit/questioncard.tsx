@@ -11,7 +11,7 @@ interface QuestionCardProps {
 
 const QuestionCard = ({ index, question }: QuestionCardProps) => {
   const { faculties } = useFeedbackFormData();
-  const { setSubmissions } = useSubmission();
+  const { submissions, setSubmissions } = useSubmission();
   const [ratings, setRatings] = useState<number[] | null>(null);
 
   useEffect(() => {
@@ -26,14 +26,11 @@ const QuestionCard = ({ index, question }: QuestionCardProps) => {
 
     // Update submissions in context
     if (!setSubmissions) return;
-    setSubmissions((prev) => {
-      const updated = { ...prev };
-      const key = "Q" + index;
-      updated[key] = newRatings.filter((r) => r > 0);
-      return updated;
-    });
+    const updated = { ...(submissions || {}) };
+    const key = "Q" + index;
+    updated[key] = newRatings.filter((r) => r > 0);
+    setSubmissions(updated);
   };
-
   return (
     <Card className="w-full max-w-md sm:max-w-lg md:max-w-2xl lg:max-w-3xl p-4 sm:p-6 shadow-md rounded-2xl">
       <p className="text-base sm:text-lg font-medium text-foreground">
