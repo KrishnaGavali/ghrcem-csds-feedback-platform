@@ -18,11 +18,6 @@ type formDataType = {
   Faculties: { facultyName: string; subject: string }[];
 };
 
-type submissionType = {
-  StudentName: string;
-  Roll: number;
-};
-
 // ----------------------------
 // Skeleton Components
 // ----------------------------
@@ -188,7 +183,7 @@ export default function SubmissionsPage() {
           {loading ? (
             <FacultySkeleton />
           ) : (
-            <FacultySection facultyData={formData?.Faculties} />
+            <FacultySection facultyData={formData?.Faculties || []} />
           )}
         </CardContent>
       </Card>

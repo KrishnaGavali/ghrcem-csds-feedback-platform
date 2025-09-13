@@ -12,7 +12,7 @@ interface SubmissionContextType {
   formId: string;
   setFormId: (formId: string) => void;
   submissions: FormSubmission | null;
-  setSubmissions: (submissions: null) => void;
+  setSubmissions: (submissions: FormSubmission | null) => void;
 }
 
 const SubmissionContext = createContext<SubmissionContextType | undefined>(

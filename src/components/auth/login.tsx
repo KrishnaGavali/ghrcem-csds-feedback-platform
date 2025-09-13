@@ -73,10 +73,7 @@ const LoginForm = () => {
     const t = toast.loading("Logging in...");
 
     try {
-      const response = await account.createEmailPasswordSession(
-        values.email,
-        values.accessCode
-      );
+      await account.createEmailPasswordSession(values.email, values.accessCode);
 
       const user = await account.get();
 

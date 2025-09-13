@@ -49,6 +49,7 @@ export default function SubmissionTable({ submissions }: SubmissionTableProps) {
           <TableBody>
             {dataToShow.map((student) => (
               <SubmissionRow
+                id={student.id}
                 key={student.id}
                 name={student.StudentName}
                 rollNo={student.Roll}
