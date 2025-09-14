@@ -161,16 +161,16 @@ const FormSummary = ({ id, type }: FormSummaryProps) => {
               white-space: nowrap;
               vertical-align: middle;
               font-size: 9px !important;
-              width: auto;
+              width: 18px;
               height: auto;
             }
 
             .name-header {
-              width: auto;
+              width: 112px;
             }
 
             .subject-header {
-              width: auto;
+              width: 72px;
             }
         `}
       </style>
