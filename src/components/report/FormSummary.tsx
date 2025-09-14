@@ -1,3 +1,4 @@
+import { databases } from "@/handlers/appwrite";
 import {
   Table,
   TableBody,
@@ -6,15 +7,10 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
-// import TheoryFormQuesiton from "@/components/formsubmit/questionTemplate/theory.json";
-// import PracticalFormQuesiton from "@/components/formsubmit/questionTemplate/practical.json";
-
-type submissionsType = {
-  id: number;
-  StudentName: string;
-  Roll: number;
-  submission: string; // JSON string containing submission data
-};
+import { Query } from "appwrite";
+import { useState, useEffect } from "react";
+import TheoryQuestion from "@/components/formsubmit/questionTemplate/theory.json";
+import PracticalQuestion from "@/components/formsubmit/questionTemplate/practical.json";
 
 type faculties = {
   facultyName: string;
@@ -22,53 +18,112 @@ type faculties = {
 };
 
 type FormSummaryProps = {
-  submissions: submissionsType[];
-  faculties: faculties[];
+  id: string;
+  type: string;
 };
 
-const FormSummary = ({ submissions, faculties }: FormSummaryProps) => {
-  console.log("Submissions data in FormSummary:", submissions);
-  console.log("Faculties data in FormSummary:", faculties);
-  //   const [totalRating, settotalRating] = useState<number[]>();
+const FormSummary = ({ id, type }: FormSummaryProps) => {
+  const [noEntry, setNoEntry] = useState(false);
+  const [tableData, setTableData] = useState<string[][]>([]);
+  const [facultyList, setFacultyList] = useState<faculties[]>([]);
 
-  const data = [
-    ["Resources to perform practical available?", "4.63", "4.46", "4.63"],
-    ["Explained experiment before conduction?", "4.66", "4.40", "4.66"],
-    ["Proper attention in practical implementation?", "4.69", "4.34", "4.60"],
-    ["Gave checklist/steps for completion?", "4.66", "4.37", "4.57"],
-    ["Encouraged additional/advanced experiments?", "4.57", "4.17", "4.49"],
-    [
-      "Precise, updated aids of explanatory lab manuals?",
-      "4.40",
-      "4.17",
-      "4.26",
-    ],
-    ["Performance of equipment maintained?", "4.37", "4.31", "4.51"],
-    ["Experiments/practicals compulsory?", "4.57", "4.31", "4.46"],
-    ["Teacher elaborates real implications?", "4.49", "4.51", "4.60"],
-    ["Total Avg", "4.55", "4.35", "4.52"],
-    ["Avg Feedback (%)", "91", "87", "90.4"],
-  ];
+  // Pick the right question set based on type
+  const questions =
+    type === "theory"
+      ? Object.values(TheoryQuestion)
+      : Object.values(PracticalQuestion);
 
-  const facultyList = [
-    { name: "Prof. Nishigandha Vyawahare", subject: "OOP" },
-    { name: "Prof. Geetanjali Rokade", subject: "CN" },
-    { name: "Prof. Gayatri Deshmukh", subject: "MLA" },
-    { name: "Prof. Nishigandha Vyawahare", subject: "OOP" },
-    { name: "Prof. Geetanjali Rokade", subject: "CN" },
-    { name: "Prof. Gayatri Deshmukh", subject: "MLA" },
-  ];
+  useEffect(() => {
+    const fetchReport = async () => {
+      try {
+        const reportData = await databases.listRows({
+          databaseId: import.meta.env.VITE_DATABASE_ID,
+          tableId: "report",
+          queries: [Query.equal("formId", id)],
+        });
 
-  const getTotalOfRaatings = () => {
-    console.log(
-      "This is after running map :",
-      submissions.map((value, idx) => {
-        return { submission: JSON.parse(value["submission"]), idx };
-      })
+        if (
+          !reportData.rows.length ||
+          reportData.rows[0].TotalSubmissions === 0
+        ) {
+          setNoEntry(true);
+          return;
+        }
+
+        const existingReport = reportData.rows[0];
+        const parsedReport: Record<string, number[]> = JSON.parse(
+          existingReport.report || "{}"
+        );
+        const totalSubmissions = existingReport.TotalSubmissions;
+
+        // faculties in consistent order
+        const facultyKeys = Object.keys(parsedReport);
+        const facultyMeta = facultyKeys.map((key) => {
+          const [facultyName, subject] = key.split(" - ");
+          return { facultyName, subject };
+        });
+        setFacultyList(facultyMeta);
+
+        const questionCount = parsedReport[facultyKeys[0]].length;
+        const calculatedData: string[][] = [];
+
+        // Loop over each question index
+        for (let qIndex = 0; qIndex < questionCount; qIndex++) {
+          const row: string[] = [];
+
+          // Add actual question text
+          row.push(questions[qIndex] || `Question ${qIndex + 1}`);
+
+          // Add each faculty’s average for this question
+          facultyKeys.forEach((facultyKey) => {
+            const avg = parsedReport[facultyKey][qIndex] / totalSubmissions;
+            row.push(avg.toFixed(2));
+          });
+
+          calculatedData.push(row);
+        }
+
+        // Add Total Avg row
+        const totalRow: string[] = ["Total Avg"];
+        facultyKeys.forEach((facultyKey) => {
+          const sum = parsedReport[facultyKey].reduce(
+            (acc, val) => acc + val,
+            0
+          );
+          const avg = sum / (totalSubmissions * questionCount);
+          totalRow.push(avg.toFixed(2));
+        });
+        calculatedData.push(totalRow);
+
+        // Add Avg Feedback (%) row
+        const percentRow: string[] = ["Avg Feedback (%)"];
+        facultyKeys.forEach((facultyKey) => {
+          const sum = parsedReport[facultyKey].reduce(
+            (acc, val) => acc + val,
+            0
+          );
+          const avg = sum / (totalSubmissions * questionCount);
+          const percent = (avg / 5) * 100; // max rating = 5
+          percentRow.push(percent.toFixed(1));
+        });
+        calculatedData.push(percentRow);
+
+        setTableData(calculatedData);
+      } catch (error) {
+        console.error("Error fetching report:", error);
+      }
+    };
+
+    fetchReport();
+  }, [id, type]);
+
+  if (noEntry) {
+    return (
+      <div className="text-center mt-6 font-medium text-red-500">
+        No feedback submitted yet.
+      </div>
     );
-  };
-
-  getTotalOfRaatings();
+  }
 
   return (
     <div className="w-[98%] mx-auto mt-6">
@@ -76,12 +131,10 @@ const FormSummary = ({ submissions, faculties }: FormSummaryProps) => {
         Summary
       </h2>
 
-      {/* Responsive Table */}
       <div className="overflow-x-auto rounded-xl border border-border shadow-md bg-background">
         <Table className="min-w-[700px] text-xs sm:text-sm md:text-base">
           <TableHeader>
             <TableRow className="bg-muted">
-              {/* Sticky only on md+ screens */}
               <TableHead className="md:sticky md:left-0 md:z-10 md:bg-muted font-semibold whitespace-pre-wrap min-w-[180px]">
                 Questions
               </TableHead>
@@ -90,33 +143,28 @@ const FormSummary = ({ submissions, faculties }: FormSummaryProps) => {
                   key={idx}
                   className="whitespace-nowrap text-center min-w-[150px]"
                 >
-                  {f.name} <br />
+                  {f.facultyName} <br />
                   <span className="font-medium">({f.subject})</span>
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.map((row, i) => (
+            {tableData.map((row, i) => (
               <TableRow
                 key={i}
                 className={`${
                   i % 2 === 0 ? "bg-background" : "bg-muted/30"
                 } hover:bg-muted/50 transition-colors`}
               >
-                {/* Sticky only on md+ screens */}
                 <TableCell className="md:sticky md:left-0 md:z-10 md:bg-inherit font-medium min-w-[180px] whitespace-pre-wrap">
                   {row[0]}
                 </TableCell>
-                <TableCell className="text-center min-w-[100px]">
-                  {row[1]}
-                </TableCell>
-                <TableCell className="text-center min-w-[100px]">
-                  {row[2]}
-                </TableCell>
-                <TableCell className="text-center min-w-[100px]">
-                  {row[3]}
-                </TableCell>
+                {row.slice(1).map((val, j) => (
+                  <TableCell key={j} className="text-center min-w-[100px]">
+                    {val}
+                  </TableCell>
+                ))}
               </TableRow>
             ))}
           </TableBody>

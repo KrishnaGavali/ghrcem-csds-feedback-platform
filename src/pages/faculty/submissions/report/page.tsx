@@ -1,4 +1,5 @@
 import Navbar from "@/components/dashboard/navbar";
+import AvgFeedback from "@/components/report/AvgFeedback";
 import FormInfo from "@/components/report/FormInfo";
 import FormSummary from "@/components/report/FormSummary";
 import { databases } from "@/handlers/appwrite";
@@ -23,6 +24,7 @@ const ReportPage = () => {
 
   const getformData = useCallback(async () => {
     // setLoading(true);
+    console.log(submissions);
 
     if (!formId) {
       navigate("/faculty/dashboard");
@@ -92,10 +94,8 @@ const ReportPage = () => {
         Type={formData?.Type || ""}
         Branch={formData?.Branch || ""}
       />
-      <FormSummary
-        submissions={submissions}
-        faculties={formData?.Faculties || []}
-      />
+      <FormSummary id={formId || ""} type={formData?.Type || ""} />
+      <AvgFeedback />
     </div>
   );
 };
