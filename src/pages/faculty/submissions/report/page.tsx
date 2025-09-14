@@ -16,13 +16,13 @@ type formDataType = {
 const ReportPage = () => {
   const [searchParams] = useSearchParams();
   const formId = searchParams.get("formId");
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [formData, setFormData] = useState<formDataType | null>(null);
   const [submissions, setSubmissions] = useState<any[]>([]);
 
   const getformData = useCallback(async () => {
-    setLoading(true);
+    // setLoading(true);
 
     if (!formId) {
       navigate("/faculty/dashboard");
@@ -92,7 +92,10 @@ const ReportPage = () => {
         Type={formData?.Type || ""}
         Branch={formData?.Branch || ""}
       />
-      <FormSummary submissions={submissions} />
+      <FormSummary
+        submissions={submissions}
+        faculties={formData?.Faculties || []}
+      />
     </div>
   );
 };

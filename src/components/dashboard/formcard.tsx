@@ -37,6 +37,19 @@ const FormCard = ({
         tableId: "forms",
         rowId: id,
       });
+
+      await databases.deleteRow({
+        databaseId: import.meta.env.VITE_DATABASE_ID,
+        tableId: "report",
+        rowId: id,
+      });
+
+      await databases.deleteRow({
+        databaseId: import.meta.env.VITE_DATABASE_ID,
+        tableId: "submissions",
+        rowId: id,
+      });
+
       toast.success("Form deleted successfully!", { id: toastId });
       setDeleteDialogOpen(false);
     } catch (error: any) {

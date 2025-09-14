@@ -1,5 +1,3 @@
-import React from "react";
-
 type FormInfoProps = {
   Name: string;
   Type: string;

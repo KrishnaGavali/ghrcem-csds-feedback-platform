@@ -6,19 +6,30 @@ import {
   TableHeader,
   TableRow,
 } from "../ui/table";
+// import TheoryFormQuesiton from "@/components/formsubmit/questionTemplate/theory.json";
+// import PracticalFormQuesiton from "@/components/formsubmit/questionTemplate/practical.json";
 
 type submissionsType = {
   id: number;
   StudentName: string;
   Roll: number;
+  submission: string; // JSON string containing submission data
+};
+
+type faculties = {
+  facultyName: string;
+  subject: string;
 };
 
 type FormSummaryProps = {
   submissions: submissionsType[];
+  faculties: faculties[];
 };
 
-const FormSummary = ({ submissions }: FormSummaryProps) => {
+const FormSummary = ({ submissions, faculties }: FormSummaryProps) => {
   console.log("Submissions data in FormSummary:", submissions);
+  console.log("Faculties data in FormSummary:", faculties);
+  //   const [totalRating, settotalRating] = useState<number[]>();
 
   const data = [
     ["Resources to perform practical available?", "4.63", "4.46", "4.63"],
@@ -39,16 +50,30 @@ const FormSummary = ({ submissions }: FormSummaryProps) => {
     ["Avg Feedback (%)", "91", "87", "90.4"],
   ];
 
-  const faculties = [
+  const facultyList = [
+    { name: "Prof. Nishigandha Vyawahare", subject: "OOP" },
+    { name: "Prof. Geetanjali Rokade", subject: "CN" },
+    { name: "Prof. Gayatri Deshmukh", subject: "MLA" },
     { name: "Prof. Nishigandha Vyawahare", subject: "OOP" },
     { name: "Prof. Geetanjali Rokade", subject: "CN" },
     { name: "Prof. Gayatri Deshmukh", subject: "MLA" },
   ];
 
+  const getTotalOfRaatings = () => {
+    console.log(
+      "This is after running map :",
+      submissions.map((value, idx) => {
+        return { submission: JSON.parse(value["submission"]), idx };
+      })
+    );
+  };
+
+  getTotalOfRaatings();
+
   return (
     <div className="w-[98%] mx-auto mt-6">
       <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 text-center">
-        Form Summary Table
+        Summary
       </h2>
 
       {/* Responsive Table */}
@@ -60,7 +85,7 @@ const FormSummary = ({ submissions }: FormSummaryProps) => {
               <TableHead className="md:sticky md:left-0 md:z-10 md:bg-muted font-semibold whitespace-pre-wrap min-w-[180px]">
                 Questions
               </TableHead>
-              {faculties.map((f, idx) => (
+              {facultyList.map((f, idx) => (
                 <TableHead
                   key={idx}
                   className="whitespace-nowrap text-center min-w-[150px]"

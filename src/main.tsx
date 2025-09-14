@@ -15,6 +15,7 @@ import SubmissionsPage from "./pages/faculty/submissions/page";
 import SuccessPage from "./pages/student/success/page";
 import ReportPage from "./pages/faculty/submissions/report/page";
 import { Analytics } from "@vercel/analytics/react";
+import { RatingsProvider } from "./context/Ratings";
 
 const router = createBrowserRouter([
   {
@@ -40,11 +41,13 @@ const router = createBrowserRouter([
   {
     path: "/student/forms/submit",
     element: (
-      <FormProvider>
-        <SubmissionProvider>
-          <FormSubmit />
-        </SubmissionProvider>
-      </FormProvider>
+      <RatingsProvider>
+        <FormProvider>
+          <SubmissionProvider>
+            <FormSubmit />
+          </SubmissionProvider>
+        </FormProvider>
+      </RatingsProvider>
     ),
   },
   {
@@ -71,7 +74,6 @@ const router = createBrowserRouter([
         <AuthProvider>
           <ReportPage />
         </AuthProvider>
-        \
       </SubmissionProvider>
     ),
   },

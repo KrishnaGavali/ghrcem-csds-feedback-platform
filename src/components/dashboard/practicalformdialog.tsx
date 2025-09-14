@@ -67,7 +67,7 @@ export default function CreatePracticalFormButton() {
     const toastId = toast.loading("Creating practical form...");
 
     try {
-      await databases.createRow({
+      const res = await databases.createRow({
         databaseId: import.meta.env.VITE_DATABASE_ID,
         tableId: "forms",
         rowId: ID.unique(),
@@ -78,6 +78,18 @@ export default function CreatePracticalFormButton() {
           Faculties: JSON.stringify(data.faculties),
         },
       });
+
+      await databases.createRow({
+        databaseId: import.meta.env.VITE_DATABASE_ID,
+        tableId: "report",
+        rowId: res.$id,
+        data: {
+          formId: res.$id,
+          report: JSON.stringify({}),
+          TotalSubmissions: 0,
+        },
+      });
+
       toast.success("Practical form created successfully!", { id: toastId });
       reset();
       setOpen(false);
