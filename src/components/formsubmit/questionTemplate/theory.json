@@ -1,4 +1,14 @@
 {
   "q1": "The lectures were well prepared, organized, and course material is well structured",
-  "q2": "Faculty provides you updated knowledge and has command over the subject"
+  "q2": "Faculty provides you updated technical knowledge and has command over the subject",
+  "q3": "Teacher is able to deliver lecture with good communication skills",
+  "q4": "Teacher utilizes allocated time effectively during the lecture",
+  "q5": "Teacher maintains overall discipline in the class",
+  "q6": "Teacher emphasizes/highlights real-time applications/importance of the subject",
+  "q7": "Teacher is always accessible to students for counseling, guidance, and solving queries outside the class",
+  "q8": "Are you getting basic concepts and depth of knowledge of the subject",
+  "q9": "Are you satisfied with quality of questions and evaluation of CAEs and TAEs?",
+  "q10": "Are CAE & TAE evaluation marks transparently shown to you?",
+  "q11": "Teacher gives additional technical/non-technical inputs by using multimedia/NPTEL/Learning resources/organizing workshops",
+  "q12": "Teacher motivated/encouraged you to learn the subject and created interest in it"
 }

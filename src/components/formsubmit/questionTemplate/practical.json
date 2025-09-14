@@ -1,4 +1,12 @@
 {
-  "q1": "Whether teacher motivates/ encourages to performing practical and create interest in it?",
-  "q2": "Whether teacher explains experimental / laboratory setup?"
+  "q1": "Whether teacher motivates/encourages to perform practical and create interest in it?",
+  "q2": "Whether teacher explains experimental/laboratory setup?",
+  "q3": "Whether teacher explains and performs experiment before conduction of practical?",
+  "q4": "Whether teacher gives personal attention in practical implementation?",
+  "q5": "Whether teacher gives realistic targets for completion of practical?",
+  "q6": "Whether teacher encourages and conducts additional/advanced/content beyond syllabus experimentation?",
+  "q7": "Whether precise, updated, and self-explanatory lab manuals were provided?",
+  "q8": "Whether the performance of experiment and the experimental setup was well maintained, fully operational, and adequate?",
+  "q9": "Whether experiments/practicals are continuously evaluated?",
+  "q10": "Whether teacher elaborates the real-time applications of experimentation?"
 }

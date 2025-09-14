@@ -16,47 +16,17 @@ import {
   LabelList,
 } from "recharts";
 
-type FacultyData = {
+type FacultyFeedback = {
   facultyName: string;
   subject: string;
-  className: string;
   averageFeedback: number;
+  className?: string;
 };
 
-const facultyFeedback: FacultyData[] = [
-  {
-    facultyName: "Prof. Gayatri Deshmukh",
-    subject: "MLA",
-    className: "Second Year B.Tech DS",
-    averageFeedback: 90.7,
-  },
-  {
-    facultyName: "Prof. Geetanjali Rokade",
-    subject: "CN",
-    className: "Second Year B.Tech DS",
-    averageFeedback: 90.2,
-  },
-  {
-    facultyName: "Prof. Md. Mirazul Hoque",
-    subject: "PT",
-    className: "Second Year B.Tech DS",
-    averageFeedback: 80.1,
-  },
-  {
-    facultyName: "Prof. Nishigandha Vyavhare",
-    subject: "OOP",
-    className: "Second Year B.Tech DS",
-    averageFeedback: 91.7,
-  },
-  {
-    facultyName: "Prof. RAHUL BORATE",
-    subject: "OE1-DSFE",
-    className: "Second Year B.Tech DS",
-    averageFeedback: 89.7,
-  },
-];
+type AvgFeedbackProps = {
+  data: FacultyFeedback[];
+};
 
-// config lets shadcn map colors → var(--chart-N)
 const chartConfig = {
   averageFeedback: {
     label: "Average Feedback",
@@ -64,9 +34,11 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export default function FacultyFeedbackDashboard() {
+export default function AvgFeedback({ data }: AvgFeedbackProps) {
+  if (!data || !data.length) return null;
+
   return (
-    <div className="flex flex-col lg:flex-row gap-6 w-full">
+    <div className="flex flex-col lg:flex-row gap-6 w-full mt-6 h-screen">
       {/* Table Section */}
       <Card className="flex-1 border border-border bg-background shadow-sm">
         <CardHeader>
@@ -80,10 +52,7 @@ export default function FacultyFeedbackDashboard() {
               <thead className="bg-muted">
                 <tr>
                   <th className="border border-border px-3 py-2 text-left">
-                    Class
-                  </th>
-                  <th className="border border-border px-3 py-2 text-left">
-                    Name of Faculty
+                    Faculty
                   </th>
                   <th className="border border-border px-3 py-2 text-left">
                     Subject
@@ -94,11 +63,8 @@ export default function FacultyFeedbackDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {facultyFeedback.map((row, idx) => (
+                {data.map((row, idx) => (
                   <tr key={idx} className="hover:bg-muted/40 transition-colors">
-                    <td className="border border-border px-3 py-2">
-                      {row.className}
-                    </td>
                     <td className="border border-border px-3 py-2">
                       {row.facultyName}
                     </td>
@@ -106,7 +72,7 @@ export default function FacultyFeedbackDashboard() {
                       {row.subject}
                     </td>
                     <td className="border border-border px-3 py-2 text-center">
-                      {row.averageFeedback}
+                      {row.averageFeedback.toFixed(2)}
                     </td>
                   </tr>
                 ))}
@@ -123,13 +89,9 @@ export default function FacultyFeedbackDashboard() {
             Faculty Feedback in Percentage
           </CardTitle>
         </CardHeader>
-
         <CardContent className="h-[400px]">
           <ChartContainer config={chartConfig}>
-            <BarChart
-              data={facultyFeedback}
-              margin={{ top: 20, left: 12, right: 12 }}
-            >
+            <BarChart data={data} margin={{ top: 20, left: 12, right: 12 }}>
               <CartesianGrid vertical={false} stroke="var(--muted)" />
               <XAxis
                 dataKey="subject"
@@ -138,7 +100,7 @@ export default function FacultyFeedbackDashboard() {
                 tick={{ fill: "var(--foreground)", fontSize: 12 }}
               />
               <YAxis
-                domain={[70, 100]}
+                domain={[0, 100]}
                 tickLine={false}
                 axisLine={false}
                 tick={{ fill: "var(--foreground)", fontSize: 12 }}
@@ -146,7 +108,7 @@ export default function FacultyFeedbackDashboard() {
               <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
               <Bar
                 dataKey="averageFeedback"
-                fill="var(--color-averageFeedback)" // shadcn resolves → var(--chart-1)
+                fill="var(--color-averageFeedback)"
                 radius={[6, 6, 0, 0]}
                 barSize={36}
               >

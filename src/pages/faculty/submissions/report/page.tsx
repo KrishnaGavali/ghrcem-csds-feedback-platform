@@ -1,5 +1,4 @@
 import Navbar from "@/components/dashboard/navbar";
-import AvgFeedback from "@/components/report/AvgFeedback";
 import FormInfo from "@/components/report/FormInfo";
 import FormSummary from "@/components/report/FormSummary";
 import { databases } from "@/handlers/appwrite";
@@ -95,7 +94,6 @@ const ReportPage = () => {
         Branch={formData?.Branch || ""}
       />
       <FormSummary id={formId || ""} type={formData?.Type || ""} />
-      <AvgFeedback />
     </div>
   );
 };

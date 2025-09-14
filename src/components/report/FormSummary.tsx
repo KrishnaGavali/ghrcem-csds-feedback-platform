@@ -1,4 +1,11 @@
 import { databases } from "@/handlers/appwrite";
+import { useState, useEffect } from "react";
+import TheoryQuestion from "@/components/formsubmit/questionTemplate/theory.json";
+import PracticalQuestion from "@/components/formsubmit/questionTemplate/practical.json";
+import AvgFeedback from "./AvgFeedback";
+import { Query } from "appwrite";
+
+// shadcn/ui table imports
 import {
   Table,
   TableBody,
@@ -6,15 +13,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../ui/table";
-import { Query } from "appwrite";
-import { useState, useEffect } from "react";
-import TheoryQuestion from "@/components/formsubmit/questionTemplate/theory.json";
-import PracticalQuestion from "@/components/formsubmit/questionTemplate/practical.json";
+} from "@/components/ui/table";
 
-type faculties = {
+type FacultyFeedback = {
   facultyName: string;
   subject: string;
+  averageFeedback: number;
+  className?: string;
+  questionRatings: number[];
 };
 
 type FormSummaryProps = {
@@ -24,12 +30,9 @@ type FormSummaryProps = {
 
 const FormSummary = ({ id, type }: FormSummaryProps) => {
   const [noEntry, setNoEntry] = useState(false);
-  const [tableData, setTableData] = useState<string[][]>([]);
-  const [facultyList, setFacultyList] = useState<faculties[]>([]);
-
-  // Pick the right question set based on type
+  const [facultyFeedback, setFacultyFeedback] = useState<FacultyFeedback[]>([]);
   const questions =
-    type === "theory"
+    type === "Theory"
       ? Object.values(TheoryQuestion)
       : Object.values(PracticalQuestion);
 
@@ -39,7 +42,7 @@ const FormSummary = ({ id, type }: FormSummaryProps) => {
         const reportData = await databases.listRows({
           databaseId: import.meta.env.VITE_DATABASE_ID,
           tableId: "report",
-          queries: [Query.equal("formId", id)],
+          queries: [Query.search("formId", id)],
         });
 
         if (
@@ -56,59 +59,25 @@ const FormSummary = ({ id, type }: FormSummaryProps) => {
         );
         const totalSubmissions = existingReport.TotalSubmissions;
 
-        // faculties in consistent order
-        const facultyKeys = Object.keys(parsedReport);
-        const facultyMeta = facultyKeys.map((key) => {
-          const [facultyName, subject] = key.split(" - ");
-          return { facultyName, subject };
-        });
-        setFacultyList(facultyMeta);
-
-        const questionCount = parsedReport[facultyKeys[0]].length;
-        const calculatedData: string[][] = [];
-
-        // Loop over each question index
-        for (let qIndex = 0; qIndex < questionCount; qIndex++) {
-          const row: string[] = [];
-
-          // Add actual question text
-          row.push(questions[qIndex] || `Question ${qIndex + 1}`);
-
-          // Add each faculty’s average for this question
-          facultyKeys.forEach((facultyKey) => {
-            const avg = parsedReport[facultyKey][qIndex] / totalSubmissions;
-            row.push(avg.toFixed(2));
-          });
-
-          calculatedData.push(row);
-        }
-
-        // Add Total Avg row
-        const totalRow: string[] = ["Total Avg"];
-        facultyKeys.forEach((facultyKey) => {
-          const sum = parsedReport[facultyKey].reduce(
-            (acc, val) => acc + val,
-            0
+        const dynamicFacultyFeedback: FacultyFeedback[] = Object.keys(
+          parsedReport
+        ).map((facultyKey) => {
+          const ratings = parsedReport[facultyKey].map(
+            (val) => val / totalSubmissions
           );
-          const avg = sum / (totalSubmissions * questionCount);
-          totalRow.push(avg.toFixed(2));
+          const sum = ratings.reduce((acc, val) => acc + val, 0);
+          const avg = sum / ratings.length;
+          const [facultyName, subject] = facultyKey.split(" - ");
+          return {
+            facultyName,
+            subject,
+            questionRatings: ratings,
+            averageFeedback: avg * 20,
+            className: "Your Class Here",
+          };
         });
-        calculatedData.push(totalRow);
 
-        // Add Avg Feedback (%) row
-        const percentRow: string[] = ["Avg Feedback (%)"];
-        facultyKeys.forEach((facultyKey) => {
-          const sum = parsedReport[facultyKey].reduce(
-            (acc, val) => acc + val,
-            0
-          );
-          const avg = sum / (totalSubmissions * questionCount);
-          const percent = (avg / 5) * 100; // max rating = 5
-          percentRow.push(percent.toFixed(1));
-        });
-        calculatedData.push(percentRow);
-
-        setTableData(calculatedData);
+        setFacultyFeedback(dynamicFacultyFeedback);
       } catch (error) {
         console.error("Error fetching report:", error);
       }
@@ -126,51 +95,162 @@ const FormSummary = ({ id, type }: FormSummaryProps) => {
   }
 
   return (
-    <div className="w-[98%] mx-auto mt-6">
-      <h2 className="text-lg sm:text-xl md:text-2xl font-bold mb-4 text-center">
-        Summary
-      </h2>
+    <>
+      <style>
+        {`
+          @media print {
+            body {
+              margin: 10mm;
+              font-size: 9px;
+              zoom: 0.85;
+            }
 
-      <div className="overflow-x-auto rounded-xl border border-border shadow-md bg-background">
-        <Table className="min-w-[700px] text-xs sm:text-sm md:text-base">
+            .print-container {
+              page-break-inside: avoid;
+              break-inside: avoid;
+            }
+
+            table {
+              border-collapse: collapse;
+              width: 100%;
+              table-layout: fixed;
+            }
+
+            th, td {
+              border: 1px solid #000 !important;
+              padding: 4px !important;
+              text-align: center;
+              font-size: 9px !important;
+              word-break: break-word;
+            }
+
+            th {
+              
+            }
+
+            tr {
+              page-break-inside: avoid;
+            }
+
+            .rotate-header {
+              writing-mode: vertical-rl;
+              transform: rotate(180deg);
+              white-space: nowrap;
+              vertical-align: middle;
+              font-size: 9px !important;
+              width: 24px;
+              height: auto;
+            }
+
+            .name-header {
+              width: 112px;
+            }
+
+            .subject-header {
+              width: 36px;
+            }
+
+            canvas {
+              max-width: 100% !important;
+              height: auto !important;
+            }
+          }
+            .rotate-header {
+              writing-mode: vertical-rl;
+              transform: rotate(180deg);
+              white-space: nowrap;
+              vertical-align: middle;
+              font-size: 9px !important;
+              width: auto;
+              height: auto;
+            }
+
+            .name-header {
+              width: auto;
+            }
+
+            .subject-header {
+              width: auto;
+            }
+        `}
+      </style>
+
+      <div className="print-container mt-6">
+        <h2
+          className="text-2xl text-primary font-bold mb-4 text-center
+        "
+        >
+          Summary
+        </h2>
+        <Table className="table-auto border-border rounded-md shadow-sm overflow-hidden w-3/4 my-4 mx-auto">
           <TableHeader>
-            <TableRow className="bg-muted">
-              <TableHead className="md:sticky md:left-0 md:z-10 md:bg-muted font-semibold whitespace-pre-wrap min-w-[180px]">
-                Questions
+            <TableRow className="">
+              <TableHead className="name-header border border-gray-300 px-2 py-1 text-center font-semibold">
+                Name of Faculty
               </TableHead>
-              {facultyList.map((f, idx) => (
+              <TableHead className="subject-header border border-gray-300 px-2 py-1 text-center font-semibold">
+                Subject
+              </TableHead>
+              {questions.map((q, idx) => (
                 <TableHead
                   key={idx}
-                  className="whitespace-nowrap text-center min-w-[150px]"
+                  className="rotate-header border border-gray-300 px-2 py-1 text-center font-semibold text-xl"
                 >
-                  {f.facultyName} <br />
-                  <span className="font-medium">({f.subject})</span>
+                  {q}
                 </TableHead>
               ))}
+              <TableHead className="rotate-header border border-gray-300 px-2 py-1 text-center font-semibold">
+                Total Avg
+              </TableHead>
+              <TableHead className="rotate-header border border-gray-300 px-2 py-1 text-center font-semibold">
+                Avg Feedback (%)
+              </TableHead>
             </TableRow>
           </TableHeader>
+
           <TableBody>
-            {tableData.map((row, i) => (
-              <TableRow
-                key={i}
-                className={`${
-                  i % 2 === 0 ? "bg-background" : "bg-muted/30"
-                } hover:bg-muted/50 transition-colors`}
-              >
-                <TableCell className="md:sticky md:left-0 md:z-10 md:bg-inherit font-medium min-w-[180px] whitespace-pre-wrap">
-                  {row[0]}
-                </TableCell>
-                {row.slice(1).map((val, j) => (
-                  <TableCell key={j} className="text-center min-w-[100px]">
-                    {val}
+            {facultyFeedback.map((f, idx) => {
+              const totalAvg =
+                f.questionRatings.reduce((acc, val) => acc + val, 0) /
+                f.questionRatings.length;
+              return (
+                <TableRow
+                  key={idx}
+                  className="border border-gray-200 hover:bg-gray-50"
+                >
+                  <TableCell className="border border-gray-300 px-2 py-1 text-center">
+                    {f.facultyName}
                   </TableCell>
-                ))}
-              </TableRow>
-            ))}
+                  <TableCell className="border border-gray-300 px-2 py-1 text-center">
+                    {f.subject}
+                  </TableCell>
+                  {f.questionRatings.map((rating, qIdx) => (
+                    <TableCell
+                      key={qIdx}
+                      className="border border-gray-300 px-2 py-1 text-center"
+                    >
+                      {rating.toFixed(2)}
+                    </TableCell>
+                  ))}
+                  <TableCell className="border border-gray-300 px-2 py-1 text-center">
+                    {totalAvg.toFixed(2)}
+                  </TableCell>
+                  <TableCell className="border border-gray-300 px-2 py-1 text-center">
+                    {((totalAvg / 5) * 100).toFixed(1)}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
-    </div>
+
+      {facultyFeedback.length > 0 && (
+        <div className="print-container mt-6">
+          <AvgFeedback data={facultyFeedback} />
+        </div>
+      )}
+    </>
   );
 };
 
