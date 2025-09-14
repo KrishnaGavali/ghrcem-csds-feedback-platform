@@ -19,9 +19,13 @@ type Submission = {
 
 type SubmissionTableProps = {
   submissions: Submission[];
+  Branch: string;
 };
 
-export default function SubmissionTable({ submissions }: SubmissionTableProps) {
+export default function SubmissionTable({
+  submissions,
+  Branch,
+}: SubmissionTableProps) {
   const dataToShow = submissions;
 
   console.log("Submissions data in SubmissionTable:", submissions);
@@ -53,7 +57,7 @@ export default function SubmissionTable({ submissions }: SubmissionTableProps) {
                 key={student.id}
                 name={student.StudentName}
                 rollNo={student.Roll}
-                branch="cs-ds"
+                branch={Branch}
               />
             ))}
           </TableBody>

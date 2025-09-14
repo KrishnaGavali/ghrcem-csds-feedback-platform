@@ -41,7 +41,7 @@ const FormsList = () => {
       return true;
     } catch {
       setAuth("", "", "");
-      navigate("/login");
+      navigate("/auth");
       toast.error("Authentication failed. Please log in.");
       return false;
     }

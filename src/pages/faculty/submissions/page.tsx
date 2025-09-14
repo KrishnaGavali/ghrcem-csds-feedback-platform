@@ -194,7 +194,10 @@ export default function SubmissionsPage() {
           {loading ? (
             <TableSkeleton />
           ) : (
-            <SubmissionTable submissions={submissions} />
+            <SubmissionTable
+              submissions={submissions}
+              Branch={formData?.Branch || ""}
+            />
           )}
         </CardContent>
       </Card>

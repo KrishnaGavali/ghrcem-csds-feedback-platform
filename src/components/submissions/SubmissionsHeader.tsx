@@ -78,7 +78,10 @@ export default function SubmissionsHeader({
 
           <Button
             onClick={() =>
-              window.open("/faculty/forms/submissions/report", "_blank")
+              window.open(
+                `/faculty/forms/submissions/report?formId=${id}`,
+                "_blank"
+              )
             }
             className="flex items-center gap-2 w-full sm:w-auto"
           >

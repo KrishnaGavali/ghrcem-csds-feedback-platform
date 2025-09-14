@@ -67,9 +67,12 @@ const router = createBrowserRouter([
   {
     path: "/faculty/forms/submissions/report",
     element: (
-      <AuthProvider>
-        <ReportPage />
-      </AuthProvider>
+      <SubmissionProvider>
+        <AuthProvider>
+          <ReportPage />
+        </AuthProvider>
+        \
+      </SubmissionProvider>
     ),
   },
 ]);
