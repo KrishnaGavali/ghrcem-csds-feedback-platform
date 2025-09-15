@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import TeacherWiseReport from "./TeacherWiseReport";
 
 type FacultyFeedback = {
   facultyName: string;
@@ -247,7 +248,20 @@ const FormSummary = ({ id, type }: FormSummaryProps) => {
 
       {facultyFeedback.length > 0 && (
         <div className="print-container mt-6">
-          <AvgFeedback data={facultyFeedback} />
+          {facultyFeedback.length > 0 && (
+            <div className="print-container mt-6">
+              <AvgFeedback data={facultyFeedback} />
+              {facultyFeedback.map((f, idx) => (
+                <TeacherWiseReport
+                  key={idx}
+                  teacherName={f.facultyName}
+                  subject={f.subject}
+                  questions={questions}
+                  ratings={f.questionRatings}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </>
