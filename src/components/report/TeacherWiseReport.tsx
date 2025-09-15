@@ -1,7 +1,3 @@
-// TeacherWiseReport.tsx
-"use client";
-
-import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   ChartContainer,
@@ -44,7 +40,7 @@ const TeacherWiseReport = ({
   ratings,
 }: TeacherWiseReportProps) => {
   // Combine questions + ratings
-  const feedbackData: QuestionFeedback[] = questions.map((q, idx) => ({
+  const feedbackData: QuestionFeedback[] = questions.map((_, idx) => ({
     question: `Q${idx + 1}`,
     rating: ratings[idx] ?? 0,
   }));
