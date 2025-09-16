@@ -8,7 +8,7 @@
 
 ## What's this about?
 
-So here's the thing - my professor came to me one day super frustrated about creating feedback forms. Every semester, faculty had to manually set up Google Forms with the same 12 questions for every teacher, every subject. We're talking 100+ questions per division, taking them 4+ hours just to set up forms.
+So here's the thing - My professor told me he spends hours every semester creating the same Google Forms for student feedback. He has to make forms for 6 different classes, each with the same 12 questions but different teacher names and Subject. Takes him about 8 hours total.
 
 I thought, "There's gotta be a better way to do this," and built a system that does it all in 30 seconds.
 
@@ -31,20 +31,20 @@ I thought, "There's gotta be a better way to do this," and built a system that d
 
 ## How it started
 
-My professor literally walked up to me and said, "Krishna, this feedback form creation is driving me crazy. Can you help?"
+My professor called me up and said, "This feedback form creation is really hectic. I've been building these forms for the past 3 days. Can you help?"
 
-Instead of just solving it for him, I realized this was probably a problem for anyone who has to create these forms. So I built something that could work for the entire department.
+That's when it hit me - this is definitely a problem worth solving. So I built something that the entire department could use.
 
-Showed it to our HOD, and she was genuinely impressed (which was surprising since I'm usually on her not-so-good list 😅). Now they're considering using it department-wide.
+When I showed it to our HOD, she was genuinely impressed (surprising since I'm usually on her not-so-good list 😅). Now they're thinking about rolling it out department-wide.
 
-Planning to pitch this to other departments too - wish me luck! 🤞
+Planning to pitch this to other departments too - fingers crossed! 🤞
 
 ## What it does
 
 **For Teachers:**
 
 - Create feedback forms by just entering name, subject, branch, year
-- Watch student submissions come in real-time
+- Watch student submissions come
 - Get analytics on feedback trends
 - Share forms with students via unique links
 
@@ -54,19 +54,13 @@ Planning to pitch this to other departments too - wish me luck! 🤞
 - No registration needed - just click and submit
 - Clean, simple interface
 
-**For Admins:**
-
-- See department-wide feedback data
-- Generate reports and insights
-- Track performance across batches
-
 ## Tech stuff
 
 - **Frontend:** React (because it's what I'm comfortable with)
 - **Backend:** Appwrite (free tier friendly)
 - **Database:** Appwrite database
 - **Hosting:** Vercel (free and fast)
-- **Auth:** Simple email-based login
+- **Auth:** Simple email-based login (Appwrite Auth)
 
 Nothing too fancy - I wanted to build something that actually works and doesn't cost money to run.
 
@@ -82,11 +76,11 @@ Nothing too fancy - I wanted to build something that actually works and doesn't 
 
 ### Creating a new form (30 seconds, I promise)
 
+![Student Info](screenshot/student_details_update.png)
 ![Create Form](screenshot/dashboard_create_form.png)
 
 ### What students see when filling feedback
 
-![Student Details](screenshot/student_details_update.png)
 ![Student Form](screenshot/form.png)
 
 ### Teachers can see all submissions
@@ -109,10 +103,8 @@ _Yeah, I know the reports UI looks pretty basic, but there's a reason for that! 
 
 ## What's next?
 
-- Maybe expand to other departments if this works well
-- Add some ML insights (if I can figure that out)
-- Mobile app could be cool
-- Integration with college's existing systems
+- Maybe expand to other departments if this works well 🏬
+- Get this running on college sub-domain will be cool 😎
 
 ## Random thoughts
 
@@ -122,6 +114,6 @@ Also learned that building for real users (who will actually tell you when somet
 
 ---
 
-**Built by Krishna Gavali** | Computer Engineering Student | GHRCEM
+**Built by Krishna Gavali** | Data Science Student | GHRCEM
 
 _If you're working on similar stuff or want to chat about this project, feel free to reach out!_
