@@ -86,6 +86,7 @@ Nothing too fancy - I wanted to build something that actually works and doesn't 
 
 ### What students see when filling feedback
 
+![Student Details](screenshot/student_details_update.png)
 ![Student Form](screenshot/form.png)
 
 ### Teachers can see all submissions
