@@ -75,12 +75,10 @@ Nothing too fancy - I wanted to build something that actually works and doesn't 
 ![Dashboard](screenshot/dashboard.png)
 
 ### Creating a new form (30 seconds, I promise)
-
-![Student Info](screenshot/student_details_update.png)
 ![Create Form](screenshot/dashboard_create_form.png)
 
 ### What students see when filling feedback
-
+![Student Info](screenshot/student_details_update.png)
 ![Student Form](screenshot/form.png)
 
 ### Teachers can see all submissions
