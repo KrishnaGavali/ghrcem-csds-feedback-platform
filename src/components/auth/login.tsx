@@ -35,7 +35,7 @@ const LoginForm = () => {
     userPromise
       .then((user) => {
         console.log("User is logged in", user);
-        setAuth(user.$id, user.email, user.name);
+        setAuth(user.$id, user.email, user.name, true);
 
         toast.success(`Welcome back, ${user.name}`);
 
@@ -79,7 +79,7 @@ const LoginForm = () => {
 
       form.reset();
 
-      setAuth(user.$id, user.email, user.name);
+      setAuth(user.$id, user.email, user.name, true);
 
       toast.success(`Welcome back, ${user.name}`, { id: t }); // replaces loading
 
