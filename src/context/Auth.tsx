@@ -5,8 +5,13 @@ interface AuthContextType {
   userId: string | null;
   email: string | null;
   name: string | null;
-  isAuth: boolean;
-  setAuth: (userId: string, email: string, name: string) => void;
+  isAuth: boolean | null;
+  setAuth: (
+    userId: string,
+    email: string,
+    name: string,
+    auth: boolean | null
+  ) => void;
   clearAuth: () => void;
 }
 
@@ -17,14 +22,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [userId, setUserId] = useState<string | null>(null);
   const [email, setEmail] = useState<string | null>(null);
-  const [isAuth, setIsAuth] = useState<boolean>(false);
+  const [isAuth, setIsAuth] = useState<boolean | null>(null);
   const [name, setName] = useState<string | null>(null);
 
-  const setAuth = (userId: string, email: string, name: string) => {
+  const setAuth = (
+    userId: string,
+    email: string,
+    name: string,
+    auth: boolean | null
+  ) => {
     setUserId(userId);
     setEmail(email);
     setName(name);
-    setIsAuth(true);
+    setIsAuth(auth);
   };
 
   const clearAuth = () => {

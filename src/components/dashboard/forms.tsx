@@ -32,15 +32,15 @@ const FormsList = () => {
     try {
       const session = await account.get();
       if (!session?.$id) {
-        setAuth("", "", "");
+        setAuth("", "", "", false);
         navigate("/auth");
         toast.error("Session expired. Please log in again.");
         return false;
       }
-      setAuth(session.$id, session.email, session.name);
+      setAuth(session.$id, session.email, session.name, true);
       return true;
     } catch {
-      setAuth("", "", "");
+      setAuth("", "", "", false);
       navigate("/auth");
       toast.error("Authentication failed. Please log in.");
       return false;
@@ -92,14 +92,20 @@ const FormsList = () => {
       const ok = await verifyAuth();
       if (ok) fetchForms();
     })();
-  }, [verifyAuth, fetchForms]);
+  }, []);
 
   return (
     <div className="mt-4 w-full">
-      {!isAuth ? (
+      {isAuth == false ? (
         <div className="flex justify-center items-center h-32">
           <p className="text-red-600 text-lg font-medium">
             Invalid access. Redirecting...
+          </p>
+        </div>
+      ) : isAuth == null ? (
+        <div className="flex justify-center items-center h-32">
+          <p className="text- text-lg font-medium">
+            Verifying session.., Please wait...
           </p>
         </div>
       ) : (
