@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Link } from "react-router";
+import { Query } from "appwrite";
 
 interface FormCardProps {
   id: string;
@@ -32,26 +33,46 @@ const FormCard = ({
   const handleDelete = async () => {
     const toastId = toast.loading("Deleting form...");
     try {
-      await databases.deleteRow({
-        databaseId: import.meta.env.VITE_DATABASE_ID,
-        tableId: "forms",
-        rowId: id,
-      });
-
-      await databases.deleteRow({
+      const report = await databases.listRows({
         databaseId: import.meta.env.VITE_DATABASE_ID,
         tableId: "report",
-        rowId: id,
+        queries: [Query.equal("formId", id)],
       });
 
-      await databases.deleteRow({
-        databaseId: import.meta.env.VITE_DATABASE_ID,
-        tableId: "submissions",
-        rowId: id,
-      });
+      if (report.rows.length != 0) {
+        await databases.deleteRow({
+          databaseId: import.meta.env.VITE_DATABASE_ID,
+          tableId: "forms",
+          rowId: id,
+        });
 
+        await databases.deleteRow({
+          databaseId: import.meta.env.VITE_DATABASE_ID,
+          tableId: "report",
+          rowId: id,
+        });
+      } else {
+        await databases.deleteRow({
+          databaseId: import.meta.env.VITE_DATABASE_ID,
+          tableId: "forms",
+          rowId: id,
+        });
+
+        await databases.deleteRow({
+          databaseId: import.meta.env.VITE_DATABASE_ID,
+          tableId: "report",
+          rowId: id,
+        });
+
+        await databases.deleteRow({
+          databaseId: import.meta.env.VITE_DATABASE_ID,
+          tableId: "submissions",
+          rowId: id,
+        });
+      }
       toast.success("Form deleted successfully!", { id: toastId });
       setDeleteDialogOpen(false);
+      window.location.reload();
     } catch (error: any) {
       toast.error(`Failed to delete form: ${error.message}`, { id: toastId });
     }

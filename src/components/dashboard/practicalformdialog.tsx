@@ -93,6 +93,7 @@ export default function CreatePracticalFormButton() {
       toast.success("Practical form created successfully!", { id: toastId });
       reset();
       setOpen(false);
+      window.location.reload();
     } catch (error: any) {
       toast.error(`Error creating practical form: ${error.message}`, {
         id: toastId,

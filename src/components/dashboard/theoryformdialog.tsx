@@ -93,6 +93,7 @@ export default function CreateTheoryFormButton() {
       toast.success("Form created successfully!", { id: toastId });
       reset();
       setOpen(false);
+      window.location.reload();
     } catch (error: any) {
       toast.error(`Error creating form: ${error.message}`, { id: toastId });
     }

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../ui/button";
 import { databases } from "@/handlers/appwrite";
-import { ID, Query } from "appwrite";
+import { Query } from "appwrite";
 import { useSubmission } from "@/context/Submission";
 import { useFeedbackFormData } from "@/context/Form";
 import { toast } from "sonner";
@@ -63,7 +63,6 @@ const SubmitForm = () => {
       StudentName: name,
       Division: div,
       Roll: rollNo,
-      submission: JSON.stringify(submissions),
     };
 
     const toastId = toast.loading("Submitting your feedback...");
@@ -72,7 +71,7 @@ const SubmitForm = () => {
       await databases.createRow({
         databaseId: import.meta.env.VITE_DATABASE_ID,
         tableId: "submissions",
-        rowId: ID.unique(),
+        rowId: id,
         data: dataToSubmit,
       });
 
