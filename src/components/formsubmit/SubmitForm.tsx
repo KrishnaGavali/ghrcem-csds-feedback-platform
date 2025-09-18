@@ -1,4 +1,3 @@
-import React from "react";
 import { Button } from "../ui/button";
 import { databases } from "@/handlers/appwrite";
 import { Query } from "appwrite";

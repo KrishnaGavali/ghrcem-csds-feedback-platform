@@ -3,7 +3,7 @@ import AnalyticsChart from "./AnalyticsChart";
 const AnalyticsSection = () => {
   return (
     <div className="flex min-h-screen items-start justify-center bg-background">
-      <div className="w-full max-w-4xl rounded-lg bg-card p-6 shadow-xl border border-border">
+      <div className="w-full max-w-4xl rounded-lg bg-card p-2 shadow-xl border border-border">
         <div className="flex flex-col justify-between mb-6">
           <h1 className="text-3xl font-extrabold text-primary">
             App Analytics Dashboard

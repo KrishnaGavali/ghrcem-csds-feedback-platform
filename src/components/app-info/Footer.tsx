@@ -1,4 +1,3 @@
-import React from "react";
 import { Github, Linkedin } from "lucide-react";
 
 const Footer = () => {
@@ -11,7 +10,7 @@ const Footer = () => {
           href="https://github.com/your-github-username"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gray-600 dark:hover:text-white hover:text-black transition-colors"
+          className="text-gray-600 dark:hover:text-white hover:text-black hover:scale-105 hover:rotate-6 transition-all"
         >
           <Github size={24} />
         </a>
@@ -19,7 +18,7 @@ const Footer = () => {
           href="https://linkedin.com/in/your-linkedin-username"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-gray-600 hover:text-blue-600 transition-colors"
+          className="text-gray-600 hover:text-blue-600 hover:scale-105 hover:rotate-6 transition-all"
         >
           <Linkedin size={24} />
         </a>

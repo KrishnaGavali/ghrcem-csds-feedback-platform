@@ -1,8 +1,6 @@
-import React from "react";
 import Disclaimer from "@/components/app-info/Disclaimer";
 import Navbar from "@/components/auth/navbar";
 import { SelectSeparator } from "@/components/ui/select";
-import AnalyticsPage from "@/components/app-info/Analytics";
 import AnalyticsSection from "@/components/app-info/Analytics";
 import Footer from "@/components/app-info/Footer";
 
