@@ -16,6 +16,7 @@ import SuccessPage from "./pages/student/success/page";
 import ReportPage from "./pages/faculty/submissions/report/page";
 import { Analytics } from "@vercel/analytics/react";
 import { RatingsProvider } from "./context/Ratings";
+import AppInfoPage from "./pages/app-info/page";
 
 const router = createBrowserRouter([
   {
@@ -75,6 +76,14 @@ const router = createBrowserRouter([
           <ReportPage />
         </AuthProvider>
       </SubmissionProvider>
+    ),
+  },
+  {
+    path: "/app-info",
+    element: (
+      <>
+        <AppInfoPage />
+      </>
     ),
   },
 ]);

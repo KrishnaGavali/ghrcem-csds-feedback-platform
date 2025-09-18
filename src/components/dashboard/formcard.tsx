@@ -51,6 +51,12 @@ const FormCard = ({
           tableId: "report",
           rowId: id,
         });
+
+        await databases.deleteRow({
+          databaseId: import.meta.env.VITE_DATABASE_ID,
+          tableId: "submissions",
+          rowId: id,
+        });
       } else {
         await databases.deleteRow({
           databaseId: import.meta.env.VITE_DATABASE_ID,
@@ -61,12 +67,6 @@ const FormCard = ({
         await databases.deleteRow({
           databaseId: import.meta.env.VITE_DATABASE_ID,
           tableId: "report",
-          rowId: id,
-        });
-
-        await databases.deleteRow({
-          databaseId: import.meta.env.VITE_DATABASE_ID,
-          tableId: "submissions",
           rowId: id,
         });
       }
@@ -152,21 +152,6 @@ const FormCard = ({
           </Link>
         </CardContent>
       </Card>
-
-      {/* Sonner Toaster
-      <Toaster
-        position="bottom-right"
-        theme={
-          theme === "light"
-            ? "light"
-            : theme === "dark"
-            ? "dark"
-            : resolvedTheme === "light"
-            ? "light"
-            : "dark"
-        }
-        richColors
-      /> */}
     </>
   );
 };
