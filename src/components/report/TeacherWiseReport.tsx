@@ -42,7 +42,7 @@ const TeacherWiseReport = ({
   // Combine questions + ratings
   const feedbackData: QuestionFeedback[] = questions.map((_, idx) => ({
     question: `Q${idx + 1}`,
-    rating: ratings[idx] ?? 0,
+    rating: parseFloat(ratings[idx].toFixed(2)) ?? 0,
   }));
 
   console.log("Rendering TeacherWiseReport for", teacherName, subject, {

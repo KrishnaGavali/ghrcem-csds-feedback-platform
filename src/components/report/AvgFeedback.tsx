@@ -21,6 +21,7 @@ type FacultyFeedback = {
   subject: string;
   averageFeedback: number;
   className?: string;
+  questionRatings?: number[];
 };
 
 type AvgFeedbackProps = {
@@ -36,6 +37,15 @@ const chartConfig = {
 
 export default function AvgFeedback({ data }: AvgFeedbackProps) {
   if (!data || !data.length) return null;
+
+  // ✅ Normalize numbers to 2 decimal places
+  const normalizedData = data.map((row) => ({
+    ...row,
+    averageFeedback: Number(row.averageFeedback.toFixed(2)),
+    questionRatings: row.questionRatings?.map((q) => Number(q.toFixed(2))),
+  }));
+
+  console.log("AvgFeedback normalizedData:", normalizedData);
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 w-full mt-6 h-screen">
@@ -63,7 +73,7 @@ export default function AvgFeedback({ data }: AvgFeedbackProps) {
                 </tr>
               </thead>
               <tbody>
-                {data.map((row, idx) => (
+                {normalizedData.map((row, idx) => (
                   <tr key={idx} className="hover:bg-muted/40 transition-colors">
                     <td className="border border-border px-3 py-2">
                       {row.facultyName}
@@ -91,7 +101,10 @@ export default function AvgFeedback({ data }: AvgFeedbackProps) {
         </CardHeader>
         <CardContent className="h-[400px]">
           <ChartContainer config={chartConfig}>
-            <BarChart data={data} margin={{ top: 20, left: 12, right: 12 }}>
+            <BarChart
+              data={normalizedData}
+              margin={{ top: 20, left: 12, right: 12 }}
+            >
               <CartesianGrid vertical={false} stroke="var(--muted)" />
               <XAxis
                 dataKey="subject"
@@ -118,6 +131,7 @@ export default function AvgFeedback({ data }: AvgFeedbackProps) {
                   offset={8}
                   className="fill-foreground"
                   fontSize={12}
+                  formatter={(value: number) => value.toFixed(2)} // ✅ labels also fixed
                 />
               </Bar>
             </BarChart>
