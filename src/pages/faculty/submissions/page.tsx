@@ -80,7 +80,7 @@ export default function SubmissionsPage() {
     if (!formId) {
       const timer = setTimeout(() => {
         navigate("/faculty/dashboard");
-      }, 3000);
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, [formId, navigate]);
@@ -99,17 +99,14 @@ export default function SubmissionsPage() {
   const fetchForm = async () => {
     setLoading(true);
     try {
-      const res = await databases.listRows({
+      const res = await databases.getRow({
         databaseId: import.meta.env.VITE_DATABASE_ID,
         tableId: "forms",
-        queries: [
-          Query.search("$id", formId),
-          Query.limit(1),
-          Query.select(["Faculties", "Type", "Name", "Branch"]),
-        ],
+        rowId: formId!,
+        queries: [Query.select(["Faculties", "Type", "Name", "Branch"])],
       });
 
-      const formData = res.rows[0];
+      const formData = res;
 
       if (!formData) {
         navigate("/faculty/dashboard");
@@ -133,18 +130,16 @@ export default function SubmissionsPage() {
 
   const fetchSubmissions = async () => {
     try {
-      const res = await databases.listRows({
+      const res = await databases.getRow({
         databaseId: import.meta.env.VITE_DATABASE_ID,
         tableId: "submissions",
-        queries: [
-          Query.equal("FormId", formId),
-          Query.select(["StudentName", "Roll"]),
-        ],
+        rowId: formId!,
+        queries: [Query.select(["Submissions"])],
       });
 
       console.log("Submissions fetch result:", res);
 
-      setSubmissions(res.rows);
+      setSubmissions(JSON.parse(res.Submissions || "[]") || []);
     } catch (error) {
       console.log(error);
     }

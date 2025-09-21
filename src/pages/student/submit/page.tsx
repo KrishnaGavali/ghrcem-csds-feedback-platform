@@ -117,11 +117,7 @@ const FormSubmit = () => {
   };
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchFaculty();
-    }, 1500); // small delay to avoid flash
-
-    return () => clearTimeout(timer);
+    fetchFaculty();
   }, [formId]);
 
   // Loader

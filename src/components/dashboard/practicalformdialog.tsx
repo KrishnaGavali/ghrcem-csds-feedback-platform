@@ -20,8 +20,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { databases } from "@/handlers/appwrite";
-import { ID } from "appwrite";
+import { databases, tablesAPI } from "@/handlers/appwrite";
+import { ID, Query } from "appwrite";
 import { toast } from "sonner";
 
 // Zod schema
@@ -64,11 +64,15 @@ export default function CreatePracticalFormButton() {
   });
 
   const onSubmit = async (data: z.infer<typeof practicalFormSchema>) => {
-    const toastId = toast.loading("Creating practical form...");
-
+    const toastId = toast.loading("Creating form...");
     try {
-      const res = await databases.createRow({
-        databaseId: import.meta.env.VITE_DATABASE_ID,
+      const currentYear = new Date().getFullYear().toString();
+      const currentMonth = (new Date().getMonth() + 1).toString();
+      const databaseId = import.meta.env.VITE_DATABASE_ID;
+
+      // 1️⃣ Create form row (async)
+      const createFormPromise = databases.createRow({
+        databaseId,
         tableId: "forms",
         rowId: ID.unique(),
         data: {
@@ -79,8 +83,33 @@ export default function CreatePracticalFormButton() {
         },
       });
 
+      // 2️⃣ Fetch monthly analytics row
+      const analyticsQueryPromise = databases.listRows({
+        databaseId,
+        tableId: "analytics",
+        queries: [
+          Query.equal("Year", currentYear),
+          Query.equal("Month", currentMonth),
+        ],
+      });
+
+      const [res, analyticsRow] = await Promise.all([
+        createFormPromise,
+        analyticsQueryPromise,
+      ]);
+
       await databases.createRow({
-        databaseId: import.meta.env.VITE_DATABASE_ID,
+        databaseId,
+        tableId: "submissions",
+        rowId: res.$id,
+        data: {
+          Submissions: JSON.stringify([]),
+        },
+      });
+
+      // 3️⃣ Create report row
+      const reportPromise = databases.createRow({
+        databaseId,
         tableId: "report",
         rowId: res.$id,
         data: {
@@ -90,14 +119,72 @@ export default function CreatePracticalFormButton() {
         },
       });
 
-      toast.success("Practical form created successfully!", { id: toastId });
+      // 4️⃣ Prepare analytics operations
+      const analyticsOps: Promise<unknown>[] = [];
+
+      if (analyticsRow.total === 0) {
+        // No monthly row, create one
+        analyticsOps.push(
+          databases.createRow({
+            databaseId,
+            tableId: "analytics",
+            rowId: ID.unique(),
+            data: {
+              Year: currentYear,
+              Month: currentMonth,
+              FormsCreated: 1,
+              FeedbackTaken: 0,
+            } as Record<string, unknown>,
+          })
+        );
+      } else if (analyticsRow.total === 1) {
+        const monthlyRow = analyticsRow.rows[0];
+
+        // Increment monthly analytics and "All" analytics in parallel
+        const allRowQuery = databases.listRows({
+          databaseId,
+          tableId: "analytics",
+          queries: [
+            Query.equal("Year", "All"),
+            Query.equal("Month", "All"),
+            Query.select(["$id"]),
+          ],
+        });
+
+        const allRowResult = await allRowQuery;
+
+        analyticsOps.push(
+          tablesAPI.incrementRowColumn({
+            databaseId,
+            tableId: "analytics",
+            rowId: monthlyRow.$id,
+            column: "FormsCreated",
+            value: 1,
+          })
+        );
+
+        if (allRowResult.total > 0) {
+          analyticsOps.push(
+            tablesAPI.incrementRowColumn({
+              databaseId,
+              tableId: "analytics",
+              rowId: allRowResult.rows[0].$id,
+              column: "FormsCreated",
+              value: 1,
+            })
+          );
+        }
+      }
+
+      // 5️⃣ Run report + analytics operations in parallel
+      await Promise.all([reportPromise, ...analyticsOps]);
+
+      toast.success("Form created successfully!", { id: toastId });
       reset();
       setOpen(false);
       window.location.reload();
     } catch (error: any) {
-      toast.error(`Error creating practical form: ${error.message}`, {
-        id: toastId,
-      });
+      toast.error(`Error creating form: ${error.message}`, { id: toastId });
     }
   };
 

@@ -39,37 +39,34 @@ const FormCard = ({
         queries: [Query.equal("formId", id)],
       });
 
-      if (report.rows.length != 0) {
-        await databases.deleteRow({
+      // Prepare delete operations to run in parallel
+      const deletePromises = [
+        databases.deleteRow({
           databaseId: import.meta.env.VITE_DATABASE_ID,
           tableId: "forms",
           rowId: id,
-        });
-
-        await databases.deleteRow({
+        }),
+        databases.deleteRow({
           databaseId: import.meta.env.VITE_DATABASE_ID,
           tableId: "report",
           rowId: id,
-        });
+        }),
+      ];
 
-        await databases.deleteRow({
-          databaseId: import.meta.env.VITE_DATABASE_ID,
-          tableId: "submissions",
-          rowId: id,
-        });
-      } else {
-        await databases.deleteRow({
-          databaseId: import.meta.env.VITE_DATABASE_ID,
-          tableId: "forms",
-          rowId: id,
-        });
-
-        await databases.deleteRow({
-          databaseId: import.meta.env.VITE_DATABASE_ID,
-          tableId: "report",
-          rowId: id,
-        });
+      // Only delete submissions if report exists
+      if (report.rows.length !== 0) {
+        deletePromises.push(
+          databases.deleteRow({
+            databaseId: import.meta.env.VITE_DATABASE_ID,
+            tableId: "submissions",
+            rowId: id,
+          })
+        );
       }
+
+      // Execute all delete operations in parallel
+      await Promise.all(deletePromises);
+
       toast.success("Form deleted successfully!", { id: toastId });
       setDeleteDialogOpen(false);
       window.location.reload();

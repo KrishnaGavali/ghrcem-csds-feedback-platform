@@ -13,7 +13,7 @@ import { Card } from "@/components/ui/card";
 
 type Submission = {
   id: number;
-  StudentName: string;
+  Name: string;
   Roll: number;
 };
 
@@ -55,7 +55,7 @@ export default function SubmissionTable({
               <SubmissionRow
                 id={student.id}
                 key={student.id}
-                name={student.StudentName}
+                name={student.Name}
                 rollNo={student.Roll}
                 branch={Branch}
               />

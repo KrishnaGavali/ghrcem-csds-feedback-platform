@@ -12,35 +12,56 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-const AnalyticsChart = () => {
-  const charData = [
-    { month: "Jan", forms: 30, submissions: 240 },
-    { month: "Feb", forms: 20, submissions: 139 },
-    { month: "Mar", forms: 27, submissions: 980 },
-    { month: "Apr", forms: 22, submissions: 320 },
-    { month: "May", forms: 25, submissions: 430 },
-    { month: "Jun", forms: 19, submissions: 280 },
-    { month: "Jul", forms: 31, submissions: 510 },
-    { month: "Aug", forms: 29, submissions: 610 },
-    { month: "Sep", forms: 33, submissions: 720 },
-    { month: "Oct", forms: 28, submissions: 450 },
-    { month: "Nov", forms: 26, submissions: 380 },
-    { month: "Dec", forms: 34, submissions: 800 },
-  ];
+type chatDataType = {
+  Month: string; // coming from backend ("9", "10", etc.)
+  FormsCreated: number;
+  FeedbackTaken: number;
+};
+
+interface chartDatatype {
+  ChartData: chatDataType[];
+}
+
+const monthMap: Record<string, string> = {
+  "1": "January",
+  "2": "February",
+  "3": "March",
+  "4": "April",
+  "5": "May",
+  "6": "June",
+  "7": "July",
+  "8": "August",
+  "9": "September",
+  "10": "October",
+  "11": "November",
+  "12": "December",
+};
+
+const AnalyticsChart = ({ ChartData }: chartDatatype) => {
+  // Transform backend data into recharts format
+  const chartData = ChartData.map((item) => ({
+    month: monthMap[item.Month] ?? item.Month,
+    forms: item.FormsCreated,
+    submissions: item.FeedbackTaken,
+  }));
+
+  // Dynamic width calculation
+  const minWidth = Math.max(200, chartData.length * 120);
+
+  console.log("Chart Data (transformed):", chartData);
 
   return (
     <div className="w-full overflow-x-auto">
-      {/* make chart container wider than mobile viewport */}
-      <div className="md:min-w-[500px] min-w-[900px]">
+      <div style={{ minWidth: `${minWidth}px` }}>
         <ChartContainer
           config={{
             forms: { label: "Forms Created", color: "var(--chart-1)" },
-            submissions: { label: "Submissions", color: "var(--chart-2)" },
+            submissions: { label: "Feedback Taken", color: "var(--chart-2)" },
           }}
           className="min-h-[256px] w-full"
         >
-          <BarChart accessibilityLayer data={charData} margin={{ top: 20 }}>
-            <Legend verticalAlign="top" height={36} />
+          <BarChart accessibilityLayer data={chartData} margin={{ top: 30 }}>
+            <Legend verticalAlign="bottom" height={36} />
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis
               dataKey="month"
@@ -52,7 +73,6 @@ const AnalyticsChart = () => {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-
             <Bar dataKey="forms" fill="var(--chart-1)" barSize={20} radius={4}>
               <LabelList
                 position="top"

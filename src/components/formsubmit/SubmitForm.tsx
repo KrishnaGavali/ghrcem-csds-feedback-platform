@@ -1,5 +1,5 @@
 import { Button } from "../ui/button";
-import { databases } from "@/handlers/appwrite";
+import { databases, tablesAPI } from "@/handlers/appwrite";
 import { Query } from "appwrite";
 import { useSubmission } from "@/context/Submission";
 import { useFeedbackFormData } from "@/context/Form";
@@ -12,8 +12,6 @@ const SubmitForm = () => {
   const { name, rollNo, div, submissions } = useSubmission();
   const { id, faculties } = useFeedbackFormData();
   const { setRatings } = useRatings();
-
-  console.log("Faculties in submit form:", faculties);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,40 +48,55 @@ const SubmitForm = () => {
     faculties.forEach((faculty, index) => {
       const facultyKey = faculty.facultyName + " - " + faculty.subject;
       transformedRatings[facultyKey] = Object.keys(submissions).map(
-        (questionKey) => submissions[questionKey][index]
+        (questionKey) => submissions[questionKey][index] ?? 0 // ✅ guard against undefined
       );
     });
-
-    console.log("Faculty-wise ratings:", transformedRatings);
-
-    // Keep original payload for DB
-    const dataToSubmit = {
-      FormId: id,
-      StudentName: name,
-      Division: div,
-      Roll: rollNo,
-    };
 
     const toastId = toast.loading("Submitting your feedback...");
 
     try {
-      await databases.createRow({
+      const fetchExistingData = await databases.getRow({
         databaseId: import.meta.env.VITE_DATABASE_ID,
         tableId: "submissions",
-        rowId: id,
-        data: dataToSubmit,
+        rowId: id!,
+        queries: [Query.select(["Submissions", "$id"])],
       });
 
-      // Fetch report row for this form
+      let existingData: any[] = [];
+      try {
+        existingData = JSON.parse(fetchExistingData?.Submissions || "[]"); // ✅ safe parse
+      } catch (err) {
+        console.warn("Corrupted Submissions JSON, resetting:", err);
+        existingData = [];
+      }
+
+      const updatedDataToSubmit = [
+        ...existingData,
+        { Name: name, Roll: rollNo },
+      ];
+
+      await databases.updateRow({
+        databaseId: import.meta.env.VITE_DATABASE_ID,
+        tableId: "submissions",
+        rowId: id!,
+        data: { Submissions: JSON.stringify(updatedDataToSubmit) },
+      });
+
+      // ✅ Guard for report existence
       const report = await databases.listRows({
         databaseId: import.meta.env.VITE_DATABASE_ID,
         tableId: "report",
         queries: [Query.equal("formId", id)],
       });
 
+      if (!report.rows.length) {
+        toast.error("Report row not found. Please contact admin.");
+        return;
+      }
+
       const existingReport = report.rows[0];
 
-      if (!existingReport || !existingReport.TotalSubmissions) {
+      if (!existingReport.TotalSubmissions) {
         // First submission → initialize report
         const initialReport: Record<string, number[]> = {};
         Object.keys(transformedRatings).forEach((faculty) => {
@@ -109,7 +122,7 @@ const SubmitForm = () => {
           } else {
             parsedReport[faculty] = parsedReport[faculty].map(
               (val: number, idx: number) =>
-                val + transformedRatings[faculty][idx]
+                val + (transformedRatings[faculty][idx] ?? 0) // ✅ guard nulls
             );
           }
         });
@@ -125,8 +138,43 @@ const SubmitForm = () => {
         });
       }
 
-      setRatings({}); // reset ratings state
+      // ✅ Analytics fixes
+      const allAnalytics = await databases.listRows({
+        databaseId: import.meta.env.VITE_DATABASE_ID,
+        tableId: "analytics",
+        queries: [Query.equal("Year", "ALL"), Query.equal("Month", "ALL")], // ✅ fixed
+      });
 
+      const thisMonthAnalytics = await databases.listRows({
+        databaseId: import.meta.env.VITE_DATABASE_ID,
+        tableId: "analytics",
+        queries: [
+          Query.equal("Year", new Date().getFullYear().toString()), // ✅ fixed
+          Query.equal("Month", (new Date().getMonth() + 1).toString()),
+        ],
+      });
+
+      if (thisMonthAnalytics.rows.length) {
+        await tablesAPI.incrementRowColumn({
+          databaseId: import.meta.env.VITE_DATABASE_ID,
+          tableId: "analytics",
+          rowId: thisMonthAnalytics.rows[0].$id,
+          column: "FeedbackTaken",
+          value: 1,
+        });
+      }
+
+      if (allAnalytics.rows.length) {
+        await tablesAPI.incrementRowColumn({
+          databaseId: import.meta.env.VITE_DATABASE_ID,
+          tableId: "analytics",
+          rowId: allAnalytics.rows[0].$id,
+          column: "FeedbackTaken",
+          value: 1,
+        });
+      }
+
+      setRatings({}); // ✅ reset only after success
       toast.success("Feedback submitted successfully!", { id: toastId });
       navigate("/student/forms/success");
     } catch (error) {

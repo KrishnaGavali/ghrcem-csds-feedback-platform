@@ -45,16 +45,9 @@ const BasicDetailCard = () => {
           setName(values.name);
           setDiv(values.division);
           setRollNo(Number(values.rollno));
+          resolve();
 
-          // simulate async delay for better UX
-
-          setTimeout(() => {
-            resolve();
-          }, 500);
-
-          setTimeout(() => {
-            setShowForm(true);
-          }, 500);
+          setShowForm(true);
         } catch (err) {
           reject(err);
         }
