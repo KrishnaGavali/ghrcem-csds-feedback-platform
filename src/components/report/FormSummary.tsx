@@ -40,21 +40,22 @@ const FormSummary = ({ id, type }: FormSummaryProps) => {
   useEffect(() => {
     const fetchReport = async () => {
       try {
-        const reportData = await databases.listRows({
+        const reportData = await databases.getRow({
           databaseId: import.meta.env.VITE_DATABASE_ID,
           tableId: "report",
-          queries: [Query.search("formId", id)],
+          rowId: id,
+          queries: [Query.select(["report", "TotalSubmissions"])],
         });
 
-        if (
-          !reportData.rows.length ||
-          reportData.rows[0].TotalSubmissions === 0
-        ) {
+        console.log(JSON.parse(reportData.report), " From Forms Summary.tsx");
+
+        if (reportData.TotalSubmissions === 0) {
           setNoEntry(true);
           return;
         }
 
-        const existingReport = reportData.rows[0];
+        const existingReport = reportData;
+
         const parsedReport: Record<string, number[]> = JSON.parse(
           existingReport.report || "{}"
         );

@@ -29,3 +29,4 @@ export const useRatings = (): RatingsContextType => {
   }
   return context;
 };
+

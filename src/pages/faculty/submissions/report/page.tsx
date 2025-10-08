@@ -25,34 +25,32 @@ const ReportPage = () => {
     // setLoading(true);
     console.log(submissions);
 
-    if (!formId) {
-      navigate("/faculty/dashboard");
-      return;
-    }
+    // if (!formId) {
+    //   navigate("/faculty/dashboard");
+    //   return;
+    // }
 
     try {
-      const res = await databases.listRows({
+      console.log("Fetching form data for formId:", formId);
+
+      const res = await databases.getRow({
         databaseId: import.meta.env.VITE_DATABASE_ID,
         tableId: "forms",
-        queries: [
-          Query.search("$id", formId),
-          Query.limit(1),
-          Query.select(["Faculties", "Type", "Name", "Branch"]),
-        ],
+        rowId: formId || "",
       });
 
-      const formData = res.rows[0];
+      console.log("Form fetch response:", res);
 
-      if (!formData) {
-        navigate("/faculty/dashboard");
-        return;
-      }
+      // if (!formData) {
+      //   navigate("/faculty/dashboard");
+      //   return;
+      // }
 
       setFormData({
-        Name: formData.Name,
-        Type: formData.Type,
-        Branch: formData.Branch,
-        Faculties: JSON.parse(formData.Faculties || "[]"),
+        Name: res.Name,
+        Type: res.Type,
+        Branch: res.Branch,
+        Faculties: JSON.parse(res.Faculties || "[]"),
       });
 
       console.log("Form fetch result:", res);
@@ -63,13 +61,11 @@ const ReportPage = () => {
 
   const getSubmissions = useCallback(async () => {
     try {
-      const res = await databases.listRows({
+      const res = await databases.getRow({
         databaseId: import.meta.env.VITE_DATABASE_ID,
         tableId: "submissions",
-        queries: [
-          Query.equal("FormId", formId || ""),
-          Query.select(["submission"]),
-        ],
+        rowId: formId || "",
+        queries: [Query.select(["Submissions"])],
       });
 
       console.log("Submissions fetch result:", res);
