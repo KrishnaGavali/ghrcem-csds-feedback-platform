@@ -249,9 +249,9 @@ const FormSummary = ({ id, type }: FormSummaryProps) => {
 
       {facultyFeedback.length > 0 && (
         <div className="print-container mt-6">
+          <AvgFeedback data={facultyFeedback} />
           {facultyFeedback.length > 0 && (
-            <div className="print-container mt-6">
-              <AvgFeedback data={facultyFeedback} />
+            <div className="print-container">
               {facultyFeedback.map((f, idx) => (
                 <TeacherWiseReport
                   key={idx}

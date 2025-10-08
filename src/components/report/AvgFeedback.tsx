@@ -48,7 +48,7 @@ export default function AvgFeedback({ data }: AvgFeedbackProps) {
   console.log("AvgFeedback normalizedData:", normalizedData);
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 w-full mt-6 h-screen">
+    <div className="flex flex-col lg:flex-row gap-6 w-full mt-6">
       {/* Table Section */}
       <Card className="flex-1 border border-border bg-background shadow-sm">
         <CardHeader>

@@ -46,7 +46,7 @@ const TeacherCard: React.FC<TeacherCardProps> = ({
   return (
     <Card className="md:w-full">
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle className="text-xl font-semibold text-foreground">
             {name}
           </CardTitle>
