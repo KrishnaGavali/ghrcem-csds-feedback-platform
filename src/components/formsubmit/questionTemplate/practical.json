@@ -1,12 +1,12 @@
 {
-  "q1": "Whether teacher motivates/encourages to perform practical and create interest in it?",
-  "q2": "Whether teacher explains experimental/laboratory setup?",
-  "q3": "Whether teacher explains and performs experiment before conduction of practical?",
-  "q4": "Whether teacher gives personal attention in practical implementation?",
-  "q5": "Whether teacher gives realistic targets for completion of practical?",
-  "q6": "Whether teacher encourages and conducts additional/advanced/content beyond syllabus experimentation?",
-  "q7": "Whether precise, updated, and self-explanatory lab manuals were provided?",
-  "q8": "Whether the performance of experiment and the experimental setup was well maintained, fully operational, and adequate?",
-  "q9": "Whether experiments/practicals are continuously evaluated?",
-  "q10": "Whether teacher elaborates the real-time applications of experimentation?"
+  "q1": "The objectives and outcomes of each practical session were clearly explained before conducting the experiment.",
+  "q2": "The faculty conducted practical sessions in a well-planned, organized, and punctual manner.",
+  "q3": "The laboratory equipment, instruments, and software required for experiments were available and in working condition.",
+  "q4": "The faculty demonstrated the experiments effectively and clarified the underlying concepts.",
+  "q5": "The practical sessions provided sufficient opportunities for hands-on learning and active participation.",
+  "q6": "The faculty encouraged problem-solving, critical thinking, and innovation during practical sessions.",
+  "q7": "The laboratory manual, experiment instructions, and learning resources were adequate and useful.",
+  "q8": "The faculty provided timely guidance, constructive feedback, and support during practical work.",
+  "q9": "The practical course enhanced my technical skills, confidence, and ability to apply theoretical concepts to real-world problems.",
+  "q10": "Overall, I am satisfied with the quality of teaching, laboratory facilities, and learning experience in this practical course."
 }

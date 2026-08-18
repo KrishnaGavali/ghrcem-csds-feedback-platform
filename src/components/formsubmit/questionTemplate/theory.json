@@ -1,14 +1,12 @@
 {
-  "q1": "The lectures were well prepared, organized, and course material is well structured",
-  "q2": "Faculty provides you updated technical knowledge and has command over the subject",
-  "q3": "Teacher is able to deliver lecture with good communication skills",
-  "q4": "Teacher utilizes allocated time effectively during the lecture",
-  "q5": "Teacher maintains overall discipline in the class",
-  "q6": "Teacher emphasizes/highlights real-time applications/importance of the subject",
-  "q7": "Teacher is always accessible to students for counseling, guidance, and solving queries outside the class",
-  "q8": "Are you getting basic concepts and depth of knowledge of the subject",
-  "q9": "Are you satisfied with quality of questions and evaluation of CAEs and TAEs?",
-  "q10": "Are CAE & TAE evaluation marks transparently shown to you?",
-  "q11": "Teacher gives additional technical/non-technical inputs by using multimedia/NPTEL/Learning resources/organizing workshops",
-  "q12": "Teacher motivated/encouraged you to learn the subject and created interest in it"
+  "q1": "The faculty was regular and punctual in conducting lecture sessions.",
+  "q2": "The course content was delivered systematically as per the syllabus, course plan, and academic schedule.",
+  "q3": "The faculty used student-centric teaching methods such as active learning, discussions, problem-solving, case studies, or flipped learning.",
+  "q4": "Digital tools, LMS, AI-enabled resources, simulations, or other ICT tools were effectively used to enhance learning.",
+  "q5": "Assessments (quizzes, assignments, presentations, etc.) were fair, transparent, and aligned with the Course Outcomes (COs).",
+  "q6": "The faculty provides academic support and encourages for independent learning.",
+  "q7": "The course outcomes and learning objectives were clearly explained at the beginning of the course.",
+  "q8": "The course promoted multidisciplinary/interdisciplinary learning and related concepts to real-world engineering applications and sustainability.",
+  "q9": "The faculty was approachable, motivated students to participate actively, and created an inclusive learning environment.",
+  "q10": "Overall, the teaching-learning process in this course helped me achieve the expected learning outcomes and develop professional skills."
 }
